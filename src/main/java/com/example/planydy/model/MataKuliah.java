@@ -26,7 +26,6 @@ public class MataKuliah {
 
     private Integer defaultSemester;
 
-    // Representasi prasyarat (simple string, bisa diubah ke many-to-many)
     private String prasyaratMkIds;
 
     public enum JenisMk {
@@ -35,4 +34,59 @@ public class MataKuliah {
     }
 
     // Getters & Setters
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getKodeMk() {
+        return kodeMk;
+    }
+
+    public void setKodeMk(String kodeMk) {
+        this.kodeMk = kodeMk;
+    }
+
+    public String getNamaMk() {
+        return namaMk;
+    }
+
+    public void setNamaMk(String namaMk) {
+        this.namaMk = namaMk;
+    }
+
+    public Integer getSks() {
+        return sks;
+    }
+
+    public void setSks(Integer sks) {
+        this.sks = sks;
+    }
+
+    public JenisMk getJenisMk() {
+        return jenisMk;
+    }
+
+    public void setJenisMk(JenisMk jenisMk) {
+        this.jenisMk = jenisMk;
+    }
+
+    public Integer getDefaultSemester() {
+        return defaultSemester;
+    }
+
+    public void setDefaultSemester(Integer defaultSemester) {
+        this.defaultSemester = defaultSemester;
+    }
+
+    public String getPrasyaratMkIds() {
+        return prasyaratMkIds;
+    }
+
+    public void setPrasyaratMkIds(String prasyaratMkIds) {
+        this.prasyaratMkIds = prasyaratMkIds;
+    }
 }

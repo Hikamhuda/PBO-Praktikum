@@ -1,10 +1,6 @@
 package com.example.planydy.controller;
 
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import com.example.planydy.model.MataKuliah;
 import com.example.planydy.repository.MataKuliahRepository;
@@ -24,8 +20,31 @@ public class MataKuliahController {
         return mataKuliahRepo.findAll();
     }
 
+    @GetMapping("/{id}")
+    public MataKuliah getById(@PathVariable Long id) {
+        return mataKuliahRepo.findById(id).orElse(null);
+    }
+
     @PostMapping
     public MataKuliah create(@RequestBody MataKuliah mk) {
         return mataKuliahRepo.save(mk);
+    }
+
+    @PutMapping("/{id}")
+    public MataKuliah update(@PathVariable Long id, @RequestBody MataKuliah mk) {
+        MataKuliah existing = mataKuliahRepo.findById(id).orElse(null);
+        if (existing == null) return null;
+        existing.setKodeMk(mk.getKodeMk());
+        existing.setNamaMk(mk.getNamaMk());
+        existing.setSks(mk.getSks());
+        existing.setJenisMk(mk.getJenisMk());
+        existing.setDefaultSemester(mk.getDefaultSemester());
+        existing.setPrasyaratMkIds(mk.getPrasyaratMkIds());
+        return mataKuliahRepo.save(existing);
+    }
+
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable Long id) {
+        mataKuliahRepo.deleteById(id);
     }
 }

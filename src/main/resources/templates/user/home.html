@@ -191,37 +191,16 @@
                 <a th:href="@{/user/matakuliah}" href="/user/matakuliah" style="background:#6c63ff;color:#fff;border:none;border-radius:8px;padding:6px 14px;cursor:pointer;text-decoration:none;display:inline-block;">+ Tambah</a>
             </div>
             <div class="matakuliah-list">
-                <div class="mk-card">
-                    <span class="mk-title">Pemrograman Web Lanjut <span class="mk-badge">wajib</span></span><br>
-                    <span class="mk-info">Kode: IF3052<br>SKS: 2<br>Semester: 5</span>
-                </div>
-                <div class="mk-card">
-                    <span class="mk-title">HIKAM HUDA <span class="mk-badge">wajib</span></span><br>
-                    <span class="mk-info">Kode: MK001<br>SKS: 3<br>Semester: 1</span>
-                </div>
-                <div class="mk-card">
-                    <span class="mk-title">PBO <span class="mk-badge">wajib</span></span><br>
-                    <span class="mk-info">Kode: MK002<br>SKS: 3<br>Semester: 1</span>
-                </div>
-                <div class="mk-card">
-                    <span class="mk-title">RPL <span class="mk-badge">wajib</span></span><br>
-                    <span class="mk-info">Kode: IF3053<br>SKS: 3<br>Semester: 1</span>
-                </div>
-                <div class="mk-card">
-                    <span class="mk-title">HIKAM HUDA <span class="mk-badge">wajib</span></span><br>
-                    <span class="mk-info">Kode: IF305<br>SKS: 3<br>Semester: 1</span>
-                </div>
-                <div class="mk-card">
-                    <span class="mk-title">sdfwdsf <span class="mk-badge">wajib</span></span><br>
-                    <span class="mk-info">Kode: safsdg<br>SKS: 3<br>Semester: 1</span>
-                </div>
-                <div class="mk-card">
-                    <span class="mk-title">ewfew <span class="mk-badge">wajib</span></span><br>
-                    <span class="mk-info">Kode: sdfwefe<br>SKS: 3<br>Semester: 1</span>
-                </div>
-                <div class="mk-card">
-                    <span class="mk-title">ewfaewew <span class="mk-badge">wajib</span></span><br>
-                    <span class="mk-info">Kode: <br>SKS: 3<br>Semester: 1</span>
+                <div class="mk-card" th:each="mk : ${matakuliahList}">
+                    <span class="mk-title" th:text="${mk.namaMk}">
+                        Nama Mata Kuliah
+                        <span class="mk-badge" th:text="${mk.jenisMk?.toString()?.toLowerCase()}">wajib</span>
+                    </span><br>
+                    <span class="mk-info">
+                        Kode: <span th:text="${mk.kodeMk}">MK001</span><br>
+                        SKS: <span th:text="${mk.sks}">3</span><br>
+                        Semester: <span th:text="${mk.defaultSemester}">1</span>
+                    </span>
                 </div>
             </div>
         </div>

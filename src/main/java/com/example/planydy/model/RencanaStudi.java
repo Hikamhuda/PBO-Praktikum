@@ -1,5 +1,7 @@
 package com.example.planydy.model;
 
+import java.time.LocalDateTime;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.GeneratedValue;
@@ -14,9 +16,8 @@ public class RencanaStudi {
 
     private Integer semester;
 
-    // Tambahan jika ingin createdAt dan updatedAt:
-    // private LocalDateTime createdAt;
-    // private LocalDateTime updatedAt;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
     // Getters & Setters
     public Long getId() {
