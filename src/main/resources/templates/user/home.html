@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #f6f9ff;
+        }
+        .container {
+            display: flex;
+            height: 100vh;
+        }
+        .sidebar {
+            width: 260px;
+            background: #fff;
+            border-right: 1px solid #e5eaf1;
+            padding: 24px 16px;
+            box-sizing: border-box;
+        }
+        .sidebar h2 {
+            color: #3b3bff;
+            margin-top: 0;
+            margin-bottom: 32px;
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+        .semester-list {
+            margin-top: 24px;
+        }
+        .semester-list input[type="text"] {
+            width: 70%;
+            padding: 6px 8px;
+            border: 1px solid #d0d7e2;
+            border-radius: 6px;
+            margin-bottom: 8px;
+        }
+        .semester-list button {
+            padding: 6px 14px;
+            background: #6c63ff;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-left: 4px;
+        }
+        .semester-btn {
+            display: block;
+            width: 100%;
+            margin: 6px 0;
+            padding: 10px 12px;
+            background: #f6f9ff;
+            border: 1px solid #d0d7e2;
+            border-radius: 8px;
+            text-align: left;
+            cursor: pointer;
+            font-size: 16px;
+            color: #3b3bff;
+            transition: background 0.2s;
+        }
+        .semester-btn:hover {
+            background: #e5eaf1;
+        }
+        .main-content {
+            flex: 1;
+            padding: 36px 32px;
+            background: #f6f9ff;
+            display: flex;
+            flex-direction: column;
+        }
+        .panel {
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 2px 8px #e5eaf1;
+            padding: 32px;
+            margin-bottom: 24px;
+        }
+        .panel h3 {
+            margin-top: 0;
+            color: #3b3bff;
+            font-size: 22px;
+        }
+        .panel .empty {
+            color: #888;
+            text-align: center;
+            margin-top: 40px;
+        }
+        .matakuliah-panel {
+            width: 320px;
+            background: #fff;
+            border-left: 1px solid #e5eaf1;
+            padding: 24px 16px;
+            box-sizing: border-box;
+        }
+        .matakuliah-panel h3 {
+            color: #3b3bff;
+            margin-top: 0;
+            margin-bottom: 16px;
+            font-size: 20px;
+        }
+        .matakuliah-list {
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+        .mk-card {
+            background: #f6f9ff;
+            border: 1px solid #d0d7e2;
+            border-radius: 10px;
+            padding: 14px 16px;
+            margin-bottom: 12px;
+            box-shadow: 0 1px 2px #e5eaf1;
+        }
+        .mk-card .mk-title {
+            font-weight: 600;
+            font-size: 16px;
+            margin-bottom: 2px;
+        }
+        .mk-card .mk-info {
+            font-size: 13px;
+            color: #555;
+        }
+        .mk-card .mk-badge {
+            float: right;
+            background: #6c63ff;
+            color: #fff;
+            border-radius: 8px;
+            padding: 2px 10px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        .topbar {
+            width: 100%;
+            background: #fff;
+            border-bottom: 1px solid #e5eaf1;
+            padding: 16px 32px;
+            box-sizing: border-box;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .topbar .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: #3b3bff;
+            letter-spacing: 1px;
+        }
+        .topbar .home-icon {
+            font-size: 22px;
+            color: #3b3bff;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="topbar">
+        <span class="logo">Planydy</span>
+        <form th:action="@{/logout}" action="/logout" method="post" style="margin:0;">
+            <button type="submit" class="home-icon" style="background:none;border:none;font-size:18px;color:#3b3bff;cursor:pointer;">Logout</button>
+        </form>
+    </div>
+    <div class="container">
+        <div class="sidebar">
+            <h2>Semester</h2>
+            <div class="semester-list">
+                <input type="text" placeholder="Semester baru" />
+                <button>Tambah</button>
+                <button class="semester-btn">Semester 1</button>
+                <button class="semester-btn">Semester 3</button>
+                <button class="semester-btn">Semester 4</button>
+                <button class="semester-btn">Semester 2</button>
+                <button class="semester-btn">Semester 1</button>
+                <button class="semester-btn">Semester 5</button>
+            </div>
+        </div>
+        <div class="main-content">
+            <div class="panel">
+                <h3>Pilih Semester</h3>
+                <div class="empty">
+                    Belum ada mata kuliah di semester ini<br>
+                    <span style="font-size:14px;">Drag mata kuliah dari panel kanan untuk menambahkannya</span>
+                </div>
+            </div>
+        </div>
+        <div class="matakuliah-panel">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <h3>Mata Kuliah</h3>
+                <a th:href="@{/user/matakuliah}" href="/user/matakuliah" style="background:#6c63ff;color:#fff;border:none;border-radius:8px;padding:6px 14px;cursor:pointer;text-decoration:none;display:inline-block;">+ Tambah</a>
+            </div>
+            <div class="matakuliah-list">
+                <div class="mk-card">
+                    <span class="mk-title">Pemrograman Web Lanjut <span class="mk-badge">wajib</span></span><br>
+                    <span class="mk-info">Kode: IF3052<br>SKS: 2<br>Semester: 5</span>
+                </div>
+                <div class="mk-card">
+                    <span class="mk-title">HIKAM HUDA <span class="mk-badge">wajib</span></span><br>
+                    <span class="mk-info">Kode: MK001<br>SKS: 3<br>Semester: 1</span>
+                </div>
+                <div class="mk-card">
+                    <span class="mk-title">PBO <span class="mk-badge">wajib</span></span><br>
+                    <span class="mk-info">Kode: MK002<br>SKS: 3<br>Semester: 1</span>
+                </div>
+                <div class="mk-card">
+                    <span class="mk-title">RPL <span class="mk-badge">wajib</span></span><br>
+                    <span class="mk-info">Kode: IF3053<br>SKS: 3<br>Semester: 1</span>
+                </div>
+                <div class="mk-card">
+                    <span class="mk-title">HIKAM HUDA <span class="mk-badge">wajib</span></span><br>
+                    <span class="mk-info">Kode: IF305<br>SKS: 3<br>Semester: 1</span>
+                </div>
+                <div class="mk-card">
+                    <span class="mk-title">sdfwdsf <span class="mk-badge">wajib</span></span><br>
+                    <span class="mk-info">Kode: safsdg<br>SKS: 3<br>Semester: 1</span>
+                </div>
+                <div class="mk-card">
+                    <span class="mk-title">ewfew <span class="mk-badge">wajib</span></span><br>
+                    <span class="mk-info">Kode: sdfwefe<br>SKS: 3<br>Semester: 1</span>
+                </div>
+                <div class="mk-card">
+                    <span class="mk-title">ewfaewew <span class="mk-badge">wajib</span></span><br>
+                    <span class="mk-info">Kode: <br>SKS: 3<br>Semester: 1</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

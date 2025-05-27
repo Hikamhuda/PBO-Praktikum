@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manajemen Mata Kuliah</title>
+    <style>
+        body {
+            background: #f4f8ff;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            margin: 0;
+        }
+        .topbar {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            padding: 32px 60px 0 0;
+        }
+        .topbar a {
+            background: #3b3bff;
+            color: #fff;
+            padding: 10px 28px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 16px;
+            transition: background 0.2s;
+        }
+        .topbar a:hover {
+            background: #2323b5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 32px 0 0 0;
+        }
+        h1 {
+            color: #3b3bff;
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 32px;
+            margin-top: 0;
+        }
+        .form-card {
+            background: #fff;
+            border-radius: 14px;
+            box-shadow: 0 2px 12px #e5eaf1;
+            padding: 32px 36px;
+            margin-bottom: 36px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 32px 24px;
+            align-items: flex-end;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 0;
+            flex: 1 1 220px;
+            min-width: 220px;
+        }
+        .form-group label {
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: #3b3bff;
+        }
+        .form-group input,
+        .form-group select {
+            padding: 10px 12px;
+            border: 1px solid #d0d7e2;
+            border-radius: 7px;
+            font-size: 15px;
+            background: #f6f9ff;
+        }
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: 2px solid #3b3bff33;
+        }
+        .form-actions {
+            display: flex;
+            align-items: flex-end;
+            height: 100%;
+        }
+        .form-actions button {
+            background: #3b3bff;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 32px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            margin-top: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background 0.2s;
+        }
+        .form-actions button:hover {
+            background: #2323b5;
+        }
+        .section-title {
+            color: #3b3bff;
+            font-size: 26px;
+            font-weight: 700;
+            margin-bottom: 18px;
+        }
+        .refresh-link {
+            color: #3b3bff;
+            text-decoration: none;
+            font-size: 15px;
+            float: right;
+            margin-top: -32px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+        }
+        .matkul-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 24px;
+        }
+        .matkul-card {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px #e5eaf1;
+            padding: 22px 24px 18px 24px;
+            min-width: 260px;
+            max-width: 300px;
+            flex: 1 1 260px;
+            position: relative;
+        }
+        .matkul-card .badge {
+            position: absolute;
+            top: 18px;
+            right: 18px;
+            background: #3b3bff;
+            color: #fff;
+            border-radius: 8px;
+            padding: 2px 14px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+        .matkul-card h3 {
+            margin: 0 0 8px 0;
+            font-size: 20px;
+            font-weight: 700;
+            color: #2323b5;
+        }
+        .matkul-card .info {
+            font-size: 15px;
+            color: #222;
+            margin-bottom: 4px;
+        }
+        .matkul-card .prasyarat {
+            background: #f6f9ff;
+            color: #555;
+            font-size: 13px;
+            border-radius: 6px;
+            padding: 4px 10px;
+            margin-top: 8px;
+            margin-bottom: 0;
+            display: inline-block;
+        }
+        .matkul-card .actions {
+            margin-top: 12px;
+        }
+        .matkul-card .actions button {
+            border: none;
+            border-radius: 6px;
+            padding: 7px 14px;
+            font-size: 14px;
+            margin-right: 6px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .matkul-card .actions .edit {
+            background: #ffe066;
+            color: #7a6d00;
+        }
+        .matkul-card .actions .delete {
+            background: #ff6b6b;
+            color: #fff;
+        }
+        @media (max-width: 900px) {
+            .form-card, .matkul-list {
+                flex-direction: column;
+            }
+            .matkul-card {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="topbar">
+        <a th:href="@{/user/home}" href="/user/home">Lihat Planner &rarr;</a>
+    </div>
+    <div class="container">
+        <h1>Manajemen Mata Kuliah</h1>
+        <form class="form-card">
+            <div class="form-group">
+                <label for="kodeMk">Kode Mata Kuliah*</label>
+                <input type="text" id="kodeMk" name="kodeMk" placeholder="MK001" required>
+            </div>
+            <div class="form-group">
+                <label for="namaMk">Nama Mata Kuliah*</label>
+                <input type="text" id="namaMk" name="namaMk" placeholder="Pemrograman Web Lanjut" required>
+            </div>
+            <div class="form-group">
+                <label for="sks">SKS*</label>
+                <select id="sks" name="sks" required>
+                    <option value="">Pilih SKS</option>
+                    <option value="2">2 SKS</option>
+                    <option value="3">3 SKS</option>
+                    <option value="4">4 SKS</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="jenisMk">Jenis*</label>
+                <select id="jenisMk" name="jenisMk" required>
+                    <option value="">Pilih Jenis</option>
+                    <option value="WAJIB">Wajib</option>
+                    <option value="PILIHAN">Pilihan</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="prasyaratMkIds">Prasyarat (Kode MK)</label>
+                <input type="text" id="prasyaratMkIds" name="prasyaratMkIds" placeholder="MK001,MK002 (pisahkan dengan koma)">
+            </div>
+            <div class="form-group">
+                <label for="defaultSemester">Semester Default*</label>
+                <select id="defaultSemester" name="defaultSemester" required>
+                    <option value="">Pilih Semester</option>
+                    <option value="1">Semester 1</option>
+                    <option value="2">Semester 2</option>
+                    <option value="3">Semester 3</option>
+                    <option value="4">Semester 4</option>
+                    <option value="5">Semester 5</option>
+                    <option value="6">Semester 6</option>
+                    <option value="7">Semester 7</option>
+                    <option value="8">Semester 8</option>
+                </select>
+            </div>
+            <div class="form-actions">
+                <button type="submit">Simpan <span>&#10003;</span></button>
+            </div>
+        </form>
+        <div>
+            <span class="section-title">Daftar Mata Kuliah</span>
+            <a class="refresh-link" href="#" onclick="location.reload()">
+                <span>&#8635;</span> Refresh Data
+            </a>
+        </div>
+        <div class="matkul-list">
+            <div class="matkul-card">
+                <span class="badge">wajib</span>
+                <h3>Pemrograman Web Lanjut</h3>
+                <div class="info">Kode: IF3052</div>
+                <div class="info">SKS: 2</div>
+                <div class="info">Semester Default: 5</div>
+                <div class="prasyarat">Prasyarat: IF2020</div>
+                <div class="actions">
+                    <button class="edit">&#9998;</button>
+                    <button class="delete">&#128465;</button>
+                </div>
+            </div>
+            <div class="matkul-card">
+                <span class="badge">wajib</span>
+                <h3>HIKAM HUDA</h3>
+                <div class="info">Kode: MK001</div>
+                <div class="info">SKS: 3</div>
+                <div class="info">Semester Default: 1</div>
+                <div class="prasyarat">Prasyarat: MK002</div>
+                <div class="actions">
+                    <button class="edit">&#9998;</button>
+                    <button class="delete">&#128465;</button>
+                </div>
+            </div>
+            <div class="matkul-card">
+                <span class="badge">wajib</span>
+                <h3>PBO</h3>
+                <div class="info">Kode: MK002</div>
+                <div class="info">SKS: 3</div>
+                <div class="info">Semester Default: 1</div>
+                <div class="prasyarat">Prasyarat: IF2020</div>
+                <div class="actions">
+                    <button class="edit">&#9998;</button>
+                    <button class="delete">&#128465;</button>
+                </div>
+            </div>
+            <div class="matkul-card">
+                <span class="badge">wajib</span>
+                <h3>RPL</h3>
+                <div class="info">Kode: IF3053</div>
+                <div class="info">SKS: 3</div>
+                <div class="info">Semester Default: 1</div>
+                <div class="prasyarat">Prasyarat: IF2020</div>
+                <div class="actions">
+                    <button class="edit">&#9998;</button>
+                    <button class="delete">&#128465;</button>
+                </div>
+            </div>
+            <div class="matkul-card">
+                <span class="badge">wajib</span>
+                <h3>HIKAM HUDA</h3>
+                <div class="info">Kode: IF305</div>
+                <div class="info">SKS: 3</div>
+                <div class="info">Semester Default: 1</div>
+                <div class="prasyarat">Prasyarat: IF2020</div>
+                <div class="actions">
+                    <button class="edit">&#9998;</button>
+                    <button class="delete">&#128465;</button>
+                </div>
+            </div>
+            <div class="matkul-card">
+                <span class="badge">wajib</span>
+                <h3>sdfwdsf</h3>
+                <div class="info">Kode: safsdg</div>
+                <div class="info">SKS: 3</div>
+                <div class="info">Semester Default: 1</div>
+                <div class="prasyarat">Prasyarat: IF2020</div>
+                <div class="actions">
+                    <button class="edit">&#9998;</button>
+                    <button class="delete">&#128465;</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
