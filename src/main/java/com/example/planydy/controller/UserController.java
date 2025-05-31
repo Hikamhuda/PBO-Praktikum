@@ -3,6 +3,7 @@ package com.example.planydy.controller;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -32,6 +33,7 @@ public class UserController {
     private final RencanaStudiRepository rencanaStudiRepo;
     private final AmbilMatkulRepository ambilMatkulRepo;
 
+    @Autowired
     public UserController(
             UserRepository userRepo,
             MataKuliahRepository mataKuliahRepo,
@@ -50,6 +52,7 @@ public class UserController {
         Optional<User> userOpt = userRepo.findByUsername(username);
         if (userOpt.isEmpty()) return "redirect:/login";
         User user = userOpt.get();
+        model.addAttribute("user", user);
 
         model.addAttribute("matakuliahList", mataKuliahRepo.findAll());
         model.addAttribute("semesterList", rencanaStudiRepo.findByUser(user));
@@ -70,8 +73,9 @@ public class UserController {
                 ambilMatkulMkIds = List.of();
             }
         } else {
-            List<AmbilMatkul> allAmbilMatkulUser = ambilMatkulRepo.findByUser(user);
-            ambilMatkulMkIds = allAmbilMatkulUser.stream()
+            // Ambil semua ambilMatkul milik user, bukan hanya semester terpilih
+            List<AmbilMatkul> ambilMatkulListAll = ambilMatkulRepo.findByUser(user);
+            ambilMatkulMkIds = ambilMatkulListAll.stream()
                 .map(am -> am.getMataKuliah().getId())
                 .distinct()
                 .toList();

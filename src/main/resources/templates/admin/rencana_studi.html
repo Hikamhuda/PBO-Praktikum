@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rencana Studi Mahasiswa</title>
+    <style>
+        body { margin: 0; font-family: 'Segoe UI', Arial, sans-serif; background: #f6f9ff; }
+        .container { display: flex; height: 100vh; }
+        .sidebar { width: 260px; background: #fff; border-right: 1px solid #e5eaf1; padding: 24px 16px; box-sizing: border-box; }
+        .sidebar h2 { color: #3b3bff; margin-top: 0; margin-bottom: 32px; font-size: 28px; font-weight: 700; letter-spacing: 1px; }
+        .main-content { flex: 1; padding: 36px 32px; background: #f6f9ff; display: flex; flex-direction: column; }
+        .panel { background: #fff; border-radius: 16px; box-shadow: 0 2px 8px #e5eaf1; padding: 32px; margin-bottom: 24px; }
+        .panel h3 { margin-top: 0; color: #3b3bff; font-size: 22px; }
+        .topbar { width: 100%; background: #fff; border-bottom: 1px solid #e5eaf1; padding: 16px 32px; box-sizing: border-box; display: flex; align-items: center; justify-content: space-between; }
+        .topbar .logo { font-size: 24px; font-weight: 700; color: #3b3bff; letter-spacing: 1px; }
+        .dropdown-content { display: none; position: absolute; right: 0; top: 110%; background: #fff; border: 1px solid #e5eaf1; border-radius: 8px; box-shadow: 0 2px 8px #e5eaf1; min-width: 140px; z-index: 10; }
+        .dropdown-content button { width: 100%; background: none; border: none; padding: 10px 18px; text-align: left; color: #ff4d4f; cursor: pointer; }
+        .sidebar a.active { background: #e5eaf1; border-radius: 6px; color: #2323b5 !important; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 24px; }
+        th, td { padding: 8px; border-bottom: 1px solid #e5eaf1; text-align: left; }
+        th { background: #f6f9ff; }
+        .user-list { margin-bottom: 24px; }
+        .user-btn { background: #f6f9ff; border: 1px solid #d0d7e2; border-radius: 8px; padding: 8px 16px; margin: 4px 0; cursor: pointer; color: #3b3bff; font-weight: 500; }
+        .user-btn.active { background: #3b3bff; color: #fff; }
+        .rs-table { margin-bottom: 32px; }
+        .mk-badge { background: #6c63ff; color: #fff; border-radius: 8px; padding: 2px 10px; font-size: 12px; font-weight: 500; margin-left: 8px; }
+    </style>
+</head>
+<body>
+    <div class="topbar">
+        <span class="logo">Planydy</span>
+        <div style="display:flex;align-items:center;gap:18px;">
+            <div class="relative group" style="position:relative;">
+                <button style="background:none;border:none;cursor:pointer;display:flex;align-items:center;gap:8px;">
+                    <span style="font-weight:600;" th:text="${#authentication.principal.username}">admin</span>
+                    <span style="color:#888;">Rencana Studi</span>
+                    <svg style="width:16px;height:16px;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path d="M19 9l-7 7-7-7"/>
+                    </svg>
+                </button>
+                <div class="dropdown-content group-hover:block" style="display:none;position:absolute;right:0;top:110%;background:#fff;border:1px solid #e5eaf1;border-radius:8px;box-shadow:0 2px 8px #e5eaf1;min-width:140px;z-index:10;">
+                    <form th:action="@{/logout}" method="post" style="margin:0;">
+                        <button type="submit" style="width:100%;background:none;border:none;padding:10px 18px;text-align:left;color:#ff4d4f;cursor:pointer;">Logout</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                var btn = document.querySelector('.topbar .group > button');
+                var dropdown = document.querySelector('.topbar .dropdown-content');
+                if(btn && dropdown) {
+                    btn.addEventListener('click', function(e){
+                        e.stopPropagation();
+                        dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+                    });
+                    document.addEventListener('click', function(){
+                        dropdown.style.display = 'none';
+                    });
+                }
+            });
+        </script>
+    </div>
+    <div class="container">
+        <div class="sidebar">
+            <h2>Admin Menu</h2>
+            <ul style="list-style:none;padding:0;">
+                <li>
+                    <a href="/admin/home"
+                       style="text-decoration:none;color:#3b3bff;font-weight:500;display:block;padding:8px 0;">
+                        Dashboard
+                    </a>
+                </li>
+                <li>
+                    <a href="/admin/matakuliah"
+                       style="text-decoration:none;color:#3b3bff;font-weight:500;display:block;padding:8px 0;">
+                        Manajemen Mata Kuliah
+                    </a>
+                </li>
+                <li>
+                    <a href="/admin/rencana-studi"
+                       class="active"
+                       style="text-decoration:none;color:#3b3bff;font-weight:500;display:block;padding:8px 0;">
+                        Rencana Studi
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="main-content">
+            <div class="panel">
+                <h3>Daftar Mahasiswa</h3>
+                <div class="user-list">
+                    <form method="get" th:action="@{/admin/rencana-studi}">
+                        <div th:each="u : ${userList}">
+                            <button type="submit" name="userId" th:value="${u.id}" th:text="${u.namaLengkap}" th:classappend="${selectedUser != null and u.id == selectedUser.id} ? 'user-btn active' : 'user-btn'"></button>
+                        </div>
+                    </form>
+                </div>
+                <div th:if="${selectedUser != null}">
+                    <h4 th:text="'Rencana Studi: ' + ${selectedUser.namaLengkap}"></h4>
+                    <table class="rs-table">
+                        <thead>
+                            <tr>
+                                <th>Semester</th>
+                                <th>Mata Kuliah Diambil</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="rs : ${rencanaStudiList}">
+                                <td th:text="${rs.semester}">Semester</td>
+                                <td>
+                                    <ul style="margin:0;padding-left:18px;">
+                                        <li th:each="am : ${ambilMatkulMap[rs.id]}" style="margin-bottom:4px;">
+                                            <span th:text="${am.mataKuliah.namaMk}"></span>
+                                            <span class="mk-badge" th:text="${am.mataKuliah.jenisMk}"></span>
+                                            <span style="color:#888;font-size:12px;">(SKS: <span th:text="${am.mataKuliah.sks}"></span>)</span>
+                                        </li>
+                                        <li th:if="${ambilMatkulMap[rs.id] == null or #lists.isEmpty(ambilMatkulMap[rs.id])}" style="color:#888;">Belum ada mata kuliah</li>
+                                    </ul>
+                                </td>
+                            </tr>
+                            <tr th:if="${#lists.isEmpty(rencanaStudiList)}">
+                                <td colspan="2" style="color:#888;">Belum ada rencana studi</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div th:if="${selectedUser == null}" style="color:#888;">Pilih mahasiswa untuk melihat rencana studi.</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
