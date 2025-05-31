@@ -1,31 +1,26 @@
 package com.example.planydy.controller;
 
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import java.util.List;
-import com.example.planydy.model.RencanaStudi;
-import com.example.planydy.repository.RencanaStudiRepository;
 
-@RestController
-@RequestMapping("/api/rencana-studi")
+import com.example.planydy.repository.MataKuliahRepository;
+import com.example.planydy.repository.RencanaStudiRepository;
+import com.example.planydy.repository.UserRepository;
+
+@Controller
+@RequestMapping("/user")
 public class RencanaStudiController {
 
-    private final RencanaStudiRepository rsRepo;
+    private final RencanaStudiRepository rencanaStudiRepo;
+    private final UserRepository userRepo;
+    private final MataKuliahRepository mataKuliahRepo;
 
-    public RencanaStudiController(RencanaStudiRepository rsRepo) {
-        this.rsRepo = rsRepo;
+    public RencanaStudiController(UserRepository userRepo, MataKuliahRepository mataKuliahRepo, RencanaStudiRepository rencanaStudiRepo) {
+        this.userRepo = userRepo;
+        this.mataKuliahRepo = mataKuliahRepo;
+        this.rencanaStudiRepo = rencanaStudiRepo;
     }
 
-    @GetMapping
-    public List<RencanaStudi> getAll() {
-        return rsRepo.findAll();
-    }
-
-    @PostMapping
-    public RencanaStudi create(@RequestBody RencanaStudi rs) {
-        return rsRepo.save(rs);
-    }
+    // HAPUS seluruh file ini jika sudah tidak dipakai
+    // atau minimal hapus method @GetMapping("/semester/detail/{id}") di salah satu controller
 }

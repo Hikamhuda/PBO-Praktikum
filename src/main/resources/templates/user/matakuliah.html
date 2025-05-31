@@ -201,6 +201,7 @@
     <div class="container">
         <h1>Manajemen Mata Kuliah</h1>
         <form class="form-card" th:action="@{/user/matakuliah}" method="post" th:object="${matakuliah}">
+            <input type="hidden" th:field="*{id}" />
             <div class="form-group">
                 <label for="kodeMk">Kode Mata Kuliah*</label>
                 <input type="text" id="kodeMk" name="kodeMk" th:field="*{kodeMk}" placeholder="MK001" required>
@@ -245,7 +246,8 @@
                 </select>
             </div>
             <div class="form-actions">
-                <button type="submit">Simpan <span>&#10003;</span></button>
+                <button type="submit" th:text="${matakuliah.id} != null ? 'Update' : 'Simpan'">Simpan <span>&#10003;</span></button>
+                <a th:if="${matakuliah.id} != null" th:href="@{/user/matakuliah}" style="margin-left:12px;color:#3b3bff;text-decoration:underline;">Batal</a>
             </div>
         </form>
         <div>
@@ -263,8 +265,8 @@
                 <div class="info">Semester Default: <span th:text="${mk.defaultSemester}">1</span></div>
                 <div class="prasyarat">Prasyarat: <span th:text="${mk.prasyaratMkIds}">-</span></div>
                 <div class="actions">
-                    <button class="edit">&#9998;</button>
-                    <button class="delete">&#128465;</button>
+                    <a class="edit" th:href="@{/user/matakuliah/edit/{id}(id=${mk.id})}" style="background:#ffe066;color:#7a6d00;padding:7px 14px;border-radius:6px;text-decoration:none;margin-right:6px;">&#9998;</a>
+                    <a class="delete" th:href="@{/user/matakuliah/delete/{id}(id=${mk.id})}" style="background:#ff6b6b;color:#fff;padding:7px 14px;border-radius:6px;text-decoration:none;" onclick="return confirm('Yakin hapus?')">&#128465;</a>
                 </div>
             </div>
         </div>

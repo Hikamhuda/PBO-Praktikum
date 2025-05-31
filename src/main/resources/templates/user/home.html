@@ -166,41 +166,74 @@
         <div class="sidebar">
             <h2>Semester</h2>
             <div class="semester-list">
-                <input type="text" placeholder="Semester baru" />
-                <button>Tambah</button>
-                <button class="semester-btn">Semester 1</button>
-                <button class="semester-btn">Semester 3</button>
-                <button class="semester-btn">Semester 4</button>
-                <button class="semester-btn">Semester 2</button>
-                <button class="semester-btn">Semester 1</button>
-                <button class="semester-btn">Semester 5</button>
+            <!-- Form tambah semester langsung di sidebar -->
+            <form th:action="@{/user/semester}" method="post" style="display:flex;gap:8px;margin-bottom:8px;">
+                <input type="text" name="semester" placeholder="Semester baru" class="w-[70%] px-2 py-1 border border-[#d0d7e2] rounded" required />
+                <button type="submit" class="px-4 py-1 bg-[#6c63ff] text-white border-none rounded">Tambah</button>
+            </form>
+            <div th:each="s, iterStat : ${semesterList}" style="display: flex; align-items: center; gap: 6px;">
+                <button 
+                class="semester-btn block w-full my-1 py-2 px-3 border border-[#d0d7e2] rounded-lg text-left cursor-pointer text-base transition"
+                type="button"
+                th:text="${s.semester}"
+                th:classappend="${selectedSemesterId} == ${s.id} ? 'bg-[#3b3bff] text-white hover:bg-[#2323b5] border-[#2323b5]' : 'bg-[#f6f9ff] text-[#3b3bff] hover:bg-[#e5eaf1]'"
+                th:onclick="'window.location.href=\'/user/home?semesterId=' + ${s.id} + '\';'">
+                Semester
+                </button>
+                <form th:action="@{/user/semester/delete/{id}(id=${s.id})}" method="post" style="margin:0;">
+                <button type="submit" title="Hapus Semester" style="background:#ff4d4f;color:#fff;border:none;border-radius:6px;padding:4px 8px;cursor:pointer;">&#10005;</button>
+                </form>
+            </div>
             </div>
         </div>
+        <!-- Panel Rencana Studi -->
         <div class="main-content">
             <div class="panel">
-                <h3>Pilih Semester</h3>
-                <div class="empty">
-                    Belum ada mata kuliah di semester ini<br>
+                <h3 th:text="(${selectedSemesterName} != null ? ${selectedSemesterName} : 'Pilih Semester anda')">Pilih Semester</h3>
+                <div class="empty" th:if="${selectedSemesterName == null}">
+                    Buat rencana studi semester anda<br>
                     <span style="font-size:14px;">Drag mata kuliah dari panel kanan untuk menambahkannya</span>
+                </div>
+                <!-- Daftar Mata Kuliah yang Diambil -->
+                <div th:if="${selectedSemesterName != null}">
+                    <h4>Mata Kuliah yang Diambil</h4>
+                    <div th:each="am : ${ambilMatkulList}">
+                        <div class="mk-card" style="background:#e6ffe6;">
+                            <span class="mk-title" th:text="${am.mataKuliah.namaMk}"></span>
+                            <span class="mk-badge" th:text="${am.mataKuliah.jenisMk?.toString()?.toLowerCase()}"></span>
+                            <form th:action="@{/user/ambilmatkul/delete/{id}(id=${am.id})}" method="post" style="display:inline;">
+                                <input type="hidden" name="semesterId" th:value="${selectedSemesterId}" />
+                                <button type="submit" style="background:#ff4d4f;color:#fff;border:none;border-radius:6px;padding:4px 8px;cursor:pointer;">Batal</button>
+                            </form>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
+        <!-- Panel Mata Kuliah -->
         <div class="matakuliah-panel">
             <div style="display: flex; justify-content: space-between; align-items: center;">
                 <h3>Mata Kuliah</h3>
-                <a th:href="@{/user/matakuliah}" href="/user/matakuliah" style="background:#6c63ff;color:#fff;border:none;border-radius:8px;padding:6px 14px;cursor:pointer;text-decoration:none;display:inline-block;">+ Tambah</a>
+                <a th:href="@{/user/matakuliah}" style="background:#6c63ff;color:#fff;border:none;border-radius:8px;padding:6px 14px;cursor:pointer;text-decoration:none;display:inline-block;">+ Tambah</a>
             </div>
             <div class="matakuliah-list">
-                <div class="mk-card" th:each="mk : ${matakuliahList}">
-                    <span class="mk-title" th:text="${mk.namaMk}">
-                        Nama Mata Kuliah
-                        <span class="mk-badge" th:text="${mk.jenisMk?.toString()?.toLowerCase()}">wajib</span>
-                    </span><br>
+                <div class="mk-card"
+                     th:each="mk : ${matakuliahList}"
+                     th:classappend="${#lists.contains(ambilMatkulMkIds, mk.id)} ? 'bg-[#e6ffe6]' : ''">
+                    <span class="mk-title" th:text="${mk.namaMk}"></span>
+                    <span class="mk-badge" th:text="${mk.jenisMk?.toString()?.toLowerCase()}"></span>
                     <span class="mk-info">
-                        Kode: <span th:text="${mk.kodeMk}">MK001</span><br>
-                        SKS: <span th:text="${mk.sks}">3</span><br>
-                        Semester: <span th:text="${mk.defaultSemester}">1</span>
+                        Kode: <span th:text="${mk.kodeMk}"></span><br>
+                        SKS: <span th:text="${mk.sks}"></span><br>
+                        Semester: <span th:text="${mk.defaultSemester}"></span>
                     </span>
+                    <form th:if="${selectedSemesterId != null and !#lists.contains(ambilMatkulMkIds, mk.id)}"
+                          th:action="@{/user/ambilmatkul/add}" method="post" style="margin-top:8px;">
+                        <input type="hidden" name="rencanaStudiId" th:value="${selectedSemesterId}" />
+                        <input type="hidden" name="mataKuliahId" th:value="${mk.id}" />
+                        <button type="submit" style="background:#3b3bff;color:#fff;border:none;border-radius:6px;padding:4px 12px;cursor:pointer;">Add</button>
+                    </form>
+                    <span th:if="${#lists.contains(ambilMatkulMkIds, mk.id)}" style="margin-top:8px;display:inline-block;background:#b2f2bb;color:#2b8a3e;padding:4px 12px;border-radius:6px;">Diambil</span>
                 </div>
             </div>
         </div>
