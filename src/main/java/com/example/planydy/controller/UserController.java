@@ -1,7 +1,9 @@
 package com.example.planydy.controller;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -55,7 +57,8 @@ public class UserController {
         model.addAttribute("user", user);
 
         model.addAttribute("matakuliahList", mataKuliahRepo.findAll());
-        model.addAttribute("semesterList", rencanaStudiRepo.findByUser(user));
+        List<RencanaStudi> semesterList = rencanaStudiRepo.findByUser(user);
+        model.addAttribute("semesterList", semesterList);
         model.addAttribute("selectedSemesterId", semesterId);
 
         String selectedSemesterName = null;
@@ -83,6 +86,90 @@ public class UserController {
         model.addAttribute("selectedSemesterName", selectedSemesterName);
         model.addAttribute("ambilMatkulList", ambilMatkulList);
         model.addAttribute("ambilMatkulMkIds", ambilMatkulMkIds);
+
+        // Tambahkan perhitungan semesterSksMap
+        Map<Long, Integer> semesterSksMap = semesterList.stream()
+            .collect(Collectors.toMap(
+                RencanaStudi::getId,
+                rs -> ambilMatkulRepo.findByUserAndRencanaStudi(user, rs).stream()
+                        .mapToInt(am -> am.getMataKuliah().getSks()).sum()
+            ));
+        model.addAttribute("semesterSksMap", semesterSksMap);
+
+        // Tambahkan perhitungan total SKS semester aktif
+        int totalSksSemester = ambilMatkulList.stream()
+            .mapToInt(am -> am.getMataKuliah().getSks())
+            .sum();
+        model.addAttribute("totalSksSemester", totalSksSemester);
+
+        // Setelah ambilMatkulList didapat:
+        // Hitung IPK semester aktif
+        totalSksSemester = ambilMatkulList.stream()
+            .mapToInt(am -> am.getMataKuliah().getSks())
+            .sum();
+        int totalBobot = ambilMatkulList.stream()
+            .mapToInt(am -> {
+                if (am.getNilai() == null) return 0;
+                switch (am.getNilai()) {
+                    case "A": return 4 * am.getMataKuliah().getSks();
+                    case "AB": return 3 * am.getMataKuliah().getSks() + 2 * am.getMataKuliah().getSks(); // 3.5 * sks
+                    case "B": return 3 * am.getMataKuliah().getSks();
+                    case "BC": return 2 * am.getMataKuliah().getSks() + 3 * am.getMataKuliah().getSks(); // 2.5 * sks
+                    case "C": return 2 * am.getMataKuliah().getSks();
+                    case "D": return 1 * am.getMataKuliah().getSks();
+                    case "E": return 0;
+                    default: return 0;
+                }
+            }).sum();
+        int totalSksForIpk = ambilMatkulList.stream()
+            .filter(am -> am.getNilai() != null && !am.getNilai().isEmpty())
+            .mapToInt(am -> am.getMataKuliah().getSks())
+            .sum();
+        double ipkSemester = 0.0;
+        if (totalSksForIpk > 0) {
+            ipkSemester = ambilMatkulList.stream()
+                .filter(am -> am.getNilai() != null && !am.getNilai().isEmpty())
+                .mapToDouble(am -> {
+                    switch (am.getNilai()) {
+                        case "A": return 4.0 * am.getMataKuliah().getSks();
+                        case "AB": return 3.5 * am.getMataKuliah().getSks();
+                        case "B": return 3.0 * am.getMataKuliah().getSks();
+                        case "BC": return 2.5 * am.getMataKuliah().getSks();
+                        case "C": return 2.0 * am.getMataKuliah().getSks();
+                        case "D": return 1.0 * am.getMataKuliah().getSks();
+                        case "E": return 0.0;
+                        default: return 0.0;
+                    }
+                }).sum() / totalSksForIpk;
+        }
+        model.addAttribute("ipkSemester", ipkSemester);
+
+        // Perhitungan IPK total seluruh semester
+        List<AmbilMatkul> allAmbilMatkul = ambilMatkulRepo.findByUser(user);
+        int totalSksAll = allAmbilMatkul.stream()
+            .filter(am -> am.getNilai() != null && !am.getNilai().isEmpty())
+            .mapToInt(am -> am.getMataKuliah().getSks())
+            .sum();
+        double ipkTotal = 0.0;
+        if (totalSksAll > 0) {
+            double totalBobotAll = allAmbilMatkul.stream()
+                .filter(am -> am.getNilai() != null && !am.getNilai().isEmpty())
+                .mapToDouble(am -> {
+                    switch (am.getNilai()) {
+                        case "A": return 4.0 * am.getMataKuliah().getSks();
+                        case "AB": return 3.5 * am.getMataKuliah().getSks();
+                        case "B": return 3.0 * am.getMataKuliah().getSks();
+                        case "BC": return 2.5 * am.getMataKuliah().getSks();
+                        case "C": return 2.0 * am.getMataKuliah().getSks();
+                        case "D": return 1.0 * am.getMataKuliah().getSks();
+                        case "E": return 0.0;
+                        default: return 0.0;
+                    }
+                }).sum();
+            ipkTotal = totalBobotAll / totalSksAll;
+        }
+        model.addAttribute("ipkTotal", ipkTotal);
+
         return "user/home";
     }
 
@@ -208,5 +295,15 @@ public class UserController {
         }
         // Agar tetap di semester yang sama setelah hapus
         return "redirect:/user/home" + (semesterId != null ? "?semesterId=" + semesterId : "");
+    }
+
+    @PostMapping("/ambilmatkul/nilai/{id}")
+    public String updateNilaiAmbilMatkul(@PathVariable Long id, @RequestParam("nilai") String nilai, @RequestParam("semesterId") Long semesterId) {
+        AmbilMatkul am = ambilMatkulRepo.findById(id).orElse(null);
+        if (am != null) {
+            am.setNilai(nilai);
+            ambilMatkulRepo.save(am);
+        }
+        return "redirect:/user/home?semesterId=" + semesterId;
     }
 }

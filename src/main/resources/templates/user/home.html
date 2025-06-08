@@ -7,172 +7,404 @@
     <style>
         body {
             margin: 0;
-            font-family: 'Segoe UI', Arial, sans-serif;
-            background: #f6f9ff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
         }
+        
         .container {
             display: flex;
-            height: 100vh;
+            height: calc(100vh - 70px);
+            background: #f8fafc;
         }
+        
         .sidebar {
-            width: 260px;
-            background: #fff;
-            border-right: 1px solid #e5eaf1;
-            padding: 24px 16px;
+            width: 280px;
+            background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+            border-right: 1px solid #e2e8f0;
+            padding: 24px 20px;
             box-sizing: border-box;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
         }
+        
         .sidebar h2 {
-            color: #3b3bff;
+            color: #2d3748;
             margin-top: 0;
-            margin-bottom: 32px;
-            font-size: 28px;
+            margin-bottom: 24px;
+            font-size: 24px;
             font-weight: 700;
-            letter-spacing: 1px;
+            text-align: center;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
-        .semester-list {
-            margin-top: 24px;
-        }
+        
         .semester-list input[type="text"] {
-            width: 70%;
-            padding: 6px 8px;
-            border: 1px solid #d0d7e2;
-            border-radius: 6px;
-            margin-bottom: 8px;
+            width: calc(100% - 80px);
+            padding: 8px 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
         }
+        
+        .semester-list input[type="text"]:focus {
+            border-color: #667eea;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
         .semester-list button {
-            padding: 6px 14px;
-            background: #6c63ff;
+            padding: 8px 16px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
             color: #fff;
             border: none;
-            border-radius: 6px;
+            border-radius: 8px;
             cursor: pointer;
-            margin-left: 4px;
+            margin-left: 8px;
+            font-weight: 600;
+            transition: transform 0.2s ease;
         }
+        
+        .semester-list button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+        
         .semester-btn {
             display: block;
             width: 100%;
-            margin: 6px 0;
-            padding: 10px 12px;
-            background: #f6f9ff;
-            border: 1px solid #d0d7e2;
-            border-radius: 8px;
+            margin: 8px 0;
+            padding: 12px 16px;
+            background: #ffffff;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
             text-align: left;
             cursor: pointer;
-            font-size: 16px;
-            color: #3b3bff;
-            transition: background 0.2s;
+            font-size: 14px;
+            font-weight: 500;
+            color: #4a5568;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         }
+        
         .semester-btn:hover {
-            background: #e5eaf1;
+            border-color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
         }
+        
         .main-content {
             flex: 1;
-            padding: 36px 32px;
-            background: #f6f9ff;
-            display: flex;
-            flex-direction: column;
-        }
-        .panel {
-            background: #fff;
-            border-radius: 16px;
-            box-shadow: 0 2px 8px #e5eaf1;
-            padding: 32px;
-            margin-bottom: 24px;
-        }
-        .panel h3 {
-            margin-top: 0;
-            color: #3b3bff;
-            font-size: 22px;
-        }
-        .panel .empty {
-            color: #888;
-            text-align: center;
-            margin-top: 40px;
-        }
-        .matakuliah-panel {
-            width: 320px;
-            background: #fff;
-            border-left: 1px solid #e5eaf1;
-            padding: 24px 16px;
-            box-sizing: border-box;
-        }
-        .matakuliah-panel h3 {
-            color: #3b3bff;
-            margin-top: 0;
-            margin-bottom: 16px;
-            font-size: 20px;
-        }
-        .matakuliah-list {
-            max-height: 70vh;
+            padding: 24px;
+            background: #f8fafc;
             overflow-y: auto;
         }
-        .mk-card {
-            background: #f6f9ff;
-            border: 1px solid #d0d7e2;
-            border-radius: 10px;
-            padding: 14px 16px;
-            margin-bottom: 12px;
-            box-shadow: 0 1px 2px #e5eaf1;
+        
+        .panel {
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            padding: 24px;
+            margin-bottom: 24px;
+            border: 1px solid #e2e8f0;
         }
-        .mk-card .mk-title {
-            font-weight: 600;
-            font-size: 16px;
-            margin-bottom: 2px;
+        
+        .panel h3 {
+            margin-top: 0;
+            margin-bottom: 16px;
+            color: #2d3748;
+            font-size: 24px;
+            font-weight: 700;
         }
-        .mk-card .mk-info {
-            font-size: 13px;
-            color: #555;
+        
+        .stats-row {
+            display: flex;
+            gap: 24px;
+            margin-bottom: 20px;
+            padding: 16px;
+            background: linear-gradient(135deg, #667eea15, #764ba215);
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
         }
-        .mk-card .mk-badge {
-            float: right;
-            background: #6c63ff;
-            color: #fff;
+        
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 12px;
+            background: white;
             border-radius: 8px;
-            padding: 2px 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 4px;
+        }
+        
+        .stat-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: #2d3748;
+        }
+        
+        .matakuliah-panel {
+            width: 340px;
+            background: #ffffff;
+            border-left: 1px solid #e2e8f0;
+            padding: 24px 20px;
+            box-sizing: border-box;
+            box-shadow: -2px 0 10px rgba(0,0,0,0.05);
+        }
+        
+        .matakuliah-panel h3 {
+            color: #2d3748;
+            margin-top: 0;
+            margin-bottom: 20px;
+            font-size: 20px;
+            font-weight: 700;
+        }
+        
+        .filter-section {
+            background: #f8fafc;
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 16px;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .filter-row {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .filter-row select {
+            padding: 8px 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 13px;
+            transition: border-color 0.3s ease;
+        }
+        
+        .filter-row select:focus {
+            border-color: #667eea;
+            outline: none;
+        }
+        
+        .filter-reset {
+            padding: 8px 16px;
+            border-radius: 8px;
+            background: #f1f5f9;
+            border: 1px solid #cbd5e1;
+            cursor: pointer;
             font-size: 12px;
             font-weight: 500;
+            color: #475569;
+            transition: all 0.2s ease;
+            margin-top: 8px;
         }
+        
+        .filter-reset:hover {
+            background: #e2e8f0;
+            border-color: #94a3b8;
+        }
+        
+        .matakuliah-list {
+            max-height: 60vh;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+        
+        .matakuliah-list::-webkit-scrollbar {
+            width: 4px;
+        }
+        
+        .matakuliah-list::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 2px;
+        }
+        
+        .matakuliah-list::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 2px;
+        }
+        
+        .mk-card {
+            background: #ffffff;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .mk-card:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(102, 126, 234, 0.15);
+        }
+        
+        .mk-card.taken {
+            background: linear-gradient(135deg, #d4edda, #c3e6cb);
+            border-color: #28a745;
+        }
+        
+        .mk-card .mk-title {
+            font-weight: 600;
+            font-size: 15px;
+            margin-bottom: 8px;
+            color: #2d3748;
+        }
+        
+        .mk-card .mk-info {
+            font-size: 12px;
+            color: #64748b;
+            line-height: 1.4;
+        }
+        
+        .mk-card .mk-badge {
+            float: right;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: #fff;
+            border-radius: 6px;
+            padding: 4px 8px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .mk-card button {
+            margin-top: 8px;
+            padding: 6px 12px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+        
+        .mk-card .btn-add {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+        
+        .mk-card .btn-add:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+        
+        .status-taken {
+            display: inline-block;
+            background: linear-gradient(135deg, #48bb78, #38a169);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-top: 8px;
+        }
+        
         .topbar {
             width: 100%;
-            background: #fff;
-            border-bottom: 1px solid #e5eaf1;
-            padding: 16px 32px;
+            height: 70px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 0 32px;
             box-sizing: border-box;
             display: flex;
             align-items: center;
             justify-content: space-between;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
+        
         .topbar .logo {
-            font-size: 24px;
-            font-weight: 700;
-            color: #3b3bff;
+            font-size: 28px;
+            font-weight: 800;
+            color: #ffffff;
             letter-spacing: 1px;
         }
-        .topbar .home-icon {
-            font-size: 22px;
-            color: #3b3bff;
-            text-decoration: none;
+        
+        .topbar button {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: white;
+            border-radius: 8px;
+            padding: 8px 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
         }
+        
+        .topbar button:hover {
+            background: rgba(255,255,255,0.2);
+        }
+        
         .dropdown-content {
             display: none;
             position: absolute;
             right: 0;
             top: 110%;
             background: #fff;
-            border: 1px solid #e5eaf1;
+            border: 1px solid #e2e8f0;
             border-radius: 8px;
-            box-shadow: 0 2px 8px #e5eaf1;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
             min-width: 140px;
             z-index: 10;
         }
-        .dropdown-content button {
+        
+        table {
             width: 100%;
-            background: none;
-            border: none;
-            padding: 10px 18px;
+            border-collapse: collapse;
+            margin-top: 16px;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
+        table th {
+            background: linear-gradient(135deg, #667eea15, #764ba215);
+            padding: 12px;
             text-align: left;
-            color: #ff4d4f;
-            cursor: pointer;
+            font-weight: 600;
+            color: #2d3748;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        
+        table td {
+            padding: 12px;
+            border-bottom: 1px solid #f1f5f9;
+            color: #4a5568;
+        }
+        
+        table tr:hover {
+            background: #f8fafc;
+        }
+        
+        table select, table button {
+            padding: 4px 8px;
+            border-radius: 4px;
+            border: 1px solid #e2e8f0;
+            font-size: 12px;
+        }
+        
+        table .btn-save {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            margin-left: 4px;
+        }
+        
+        table .btn-cancel {
+            background: #ef4444;
+            color: white;
+            border: none;
         }
     </style>
 </head>
@@ -181,9 +413,9 @@
         <span class="logo">Planydy</span>
         <div style="display:flex;align-items:center;gap:18px;">
             <div class="relative group" style="position:relative;">
-                <button style="background:none;border:none;cursor:pointer;display:flex;align-items:center;gap:8px;">
+                <button style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);cursor:pointer;display:flex;align-items:center;gap:8px;color:white;border-radius:8px;padding:8px 16px;">
                     <span style="font-weight:600;" th:text="${#authentication.principal.username}">username</span>
-                    <span style="color:#888;" th:text="${user.namaLengkap}">Nama Lengkap</span>
+                    <span style="color:rgba(255,255,255,0.8);" th:text="${user.namaLengkap}">Nama Lengkap</span>
                     <svg style="width:16px;height:16px;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path d="M19 9l-7 7-7-7"/>
                     </svg>
@@ -212,81 +444,203 @@
             });
         </script>
     </div>
+    
     <div class="container">
         <div class="sidebar">
-            <h2>Semester</h2>
+            <h2>📚 Semester</h2>
             <div class="semester-list">
-            <!-- Form tambah semester langsung di sidebar -->
-            <form th:action="@{/user/semester}" method="post" style="display:flex;gap:8px;margin-bottom:8px;">
-                <input type="text" name="semester" placeholder="Semester baru" class="w-[70%] px-2 py-1 border border-[#d0d7e2] rounded" required />
-                <button type="submit" class="px-4 py-1 bg-[#6c63ff] text-white border-none rounded">Tambah</button>
-            </form>
-            <div th:each="s, iterStat : ${semesterList}" style="display: flex; align-items: center; gap: 6px;">
-                <button 
-                class="semester-btn block w-full my-1 py-2 px-3 border border-[#d0d7e2] rounded-lg text-left cursor-pointer text-base transition"
-                type="button"
-                th:text="${s.semester}"
-                th:classappend="${selectedSemesterId} == ${s.id} ? 'bg-[#3b3bff] text-white hover:bg-[#2323b5] border-[#2323b5]' : 'bg-[#f6f9ff] text-[#3b3bff] hover:bg-[#e5eaf1]'"
-                th:onclick="'window.location.href=\'/user/home?semesterId=' + ${s.id} + '\';'">
-                Semester
-                </button>
-                <form th:action="@{/user/semester/delete/{id}(id=${s.id})}" method="post" style="margin:0;">
-                <button type="submit" title="Hapus Semester" style="background:#ff4d4f;color:#fff;border:none;border-radius:6px;padding:4px 8px;cursor:pointer;">&#10005;</button>
+                <!-- Form tambah semester -->
+                <form th:action="@{/user/semester}" method="post" style="display:flex;gap:8px;margin-bottom:16px;">
+                    <input type="text" name="semester" placeholder="Semester baru" required />
+                    <button type="submit" style="height:38px;">+</button>
                 </form>
-            </div>
-            </div>
-        </div>
-        <!-- Panel Rencana Studi -->
-        <div class="main-content">
-            <div class="panel">
-                <h3 th:text="(${selectedSemesterName} != null ? ${selectedSemesterName} : 'Pilih Semester anda')">Pilih Semester</h3>
-                <div class="empty" th:if="${selectedSemesterName == null}">
-                    Buat rencana studi semester anda<br>
-                    <span style="font-size:14px;">Drag mata kuliah dari panel kanan untuk menambahkannya</span>
+                <div style="margin-bottom:18px;">
+                    <div style="background:linear-gradient(90deg,#667eea,#764ba2);color:#fff;padding:14px 18px;border-radius:12px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 8px #c3c3c3;">
+                        <span style="font-weight:600;font-size:15px;">IPK Keseluruhan</span>
+                        <span style="font-size:20px;font-weight:700;" th:text="${ipkTotal != null ? #numbers.formatDecimal(ipkTotal, 1, 2) : '0.00'}">0.00</span>
+                    </div>
                 </div>
-                <!-- Daftar Mata Kuliah yang Diambil -->
-                <div th:if="${selectedSemesterName != null}">
-                    <h4>Mata Kuliah yang Diambil</h4>
-                    <div th:each="am : ${ambilMatkulList}">
-                        <div class="mk-card" style="background:#e6ffe6;">
-                            <span class="mk-title" th:text="${am.mataKuliah.namaMk}"></span>
-                            <span class="mk-badge" th:text="${am.mataKuliah.jenisMk?.toString()?.toLowerCase()}"></span>
-                            <form th:action="@{/user/ambilmatkul/delete/{id}(id=${am.id})}" method="post" style="display:inline;">
-                                <input type="hidden" name="semesterId" th:value="${selectedSemesterId}" />
-                                <button type="submit" style="background:#ff4d4f;color:#fff;border:none;border-radius:6px;padding:4px 8px;cursor:pointer;">Batal</button>
-                            </form>
-                        </div>
+                <div th:each="s, iterStat : ${semesterList}" style="margin-bottom:10px;">
+                    <div style="display:flex;align-items:center;gap:8px;">
+                        <button 
+                            class="semester-btn"
+                            type="button"
+                            th:classappend="${selectedSemesterId} == ${s.id} ? 'bg-[#3b3bff] text-white hover:bg-[#2323b5] border-[#2323b5]' : 'bg-[#f6f9ff] text-[#3b3bff] hover:bg-[#e5eaf1]'"
+                            th:onclick="'window.location.href=\'/user/home?semesterId=' + ${s.id} + '\';'"
+                            style="flex:1;position:relative;display:flex;align-items:center;justify-content:space-between;">
+                            <span th:text="${s.semester}">Semester</span>
+                            <span style="display:inline-block;background:#e6eaff;color:#3b3bff;padding:3px 10px;border-radius:8px;font-size:13px;font-weight:600;margin-left:8px;">
+                                <span th:text="${semesterSksMap[s.id] != null ? semesterSksMap[s.id] : 0}">0</span> SKS
+                            </span>
+                        </button>
+                        <form th:action="@{/user/semester/delete/{id}(id=${s.id})}" method="post" style="margin:0;">
+                            <button type="submit" title="Hapus Semester" style="background:#ff4d4f;color:#fff;border:none;border-radius:6px;padding:4px 8px;cursor:pointer;">&#10005;</button>
+                        </form>
                     </div>
                 </div>
             </div>
         </div>
+        
+        <!-- Panel Rencana Studi -->
+        <div class="main-content">
+            <div class="panel">
+                <h3 th:text="(${selectedSemesterName} != null ? ${selectedSemesterName} : '🎯 Pilih Semester Anda')">Pilih Semester</h3>
+                
+                <div th:if="${selectedSemesterName != null}" class="stats-row">
+                    <div class="stat-item">
+                        <span class="stat-label">Total SKS</span>
+                        <span class="stat-value" th:text="${totalSksSemester}">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">IPK Semester</span>
+                        <span class="stat-value" th:text="${ipkSemester != null ? #numbers.formatDecimal(ipkSemester, 1, 2) : '0.00'}">0.00</span>
+                    </div>
+                </div>
+                
+                <div class="empty" th:if="${selectedSemesterName == null}" style="text-align:center;padding:40px;color:#64748b;">
+                    <div style="font-size:48px;margin-bottom:16px;">📋</div>
+                    <h4>Buat rencana studi semester anda</h4>
+                    <p style="font-size:14px;">Pilih semester di sidebar untuk mulai menambahkan mata kuliah</p>
+                </div>
+                
+                <!-- Daftar Mata Kuliah yang Diambil -->
+                <div th:if="${selectedSemesterName != null}">
+                    <h4>Mata Kuliah yang Diambil</h4>
+                    <table style="width:100%;border-collapse:collapse;">
+                        <thead>
+                            <tr style="background:#f6f9ff;">
+                                <th style="padding:8px;border-bottom:1px solid #e5eaf1;">Nama</th>
+                                <th style="padding:8px;border-bottom:1px solid #e5eaf1;">Kode</th>
+                                <th style="padding:8px;border-bottom:1px solid #e5eaf1;">SKS</th>
+                                <th style="padding:8px;border-bottom:1px solid #e5eaf1;">Jenis</th>
+                                <th style="padding:8px;border-bottom:1px solid #e5eaf1;">Semester</th>
+                                <th style="padding:8px;border-bottom:1px solid #e5eaf1;">Nilai</th>
+                                <th style="padding:8px;border-bottom:1px solid #e5eaf1;">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="am : ${ambilMatkulList}">
+                                <td th:text="${am.mataKuliah.namaMk}">Nama</td>
+                                <td th:text="${am.mataKuliah.kodeMk}">Kode</td>
+                                <td th:text="${am.mataKuliah.sks}">SKS</td>
+                                <td th:text="${am.mataKuliah.jenisMk}">Jenis</td>
+                                <td th:text="${am.mataKuliah.defaultSemester}">Semester</td>
+                                <td>
+                                    <form th:action="@{/user/ambilmatkul/nilai/{id}(id=${am.id})}" method="post" style="display:flex;align-items:center;gap:4px;">
+                                        <select name="nilai" required style="padding:2px 8px;border-radius:4px;">
+                                            <option value="">-</option>
+                                            <option value="A" th:selected="${am.nilai == 'A'}">A</option>
+                                            <option value="AB" th:selected="${am.nilai == 'AB'}">AB</option>
+                                            <option value="B" th:selected="${am.nilai == 'B'}">B</option>
+                                            <option value="BC" th:selected="${am.nilai == 'BC'}">BC</option>
+                                            <option value="C" th:selected="${am.nilai == 'C'}">C</option>
+                                            <option value="D" th:selected="${am.nilai == 'D'}">D</option>
+                                            <option value="E" th:selected="${am.nilai == 'E'}">E</option>
+                                        </select>
+                                        <input type="hidden" name="semesterId" th:value="${selectedSemesterId}" />
+                                        <button type="submit" style="background:#3b3bff;color:#fff;border:none;border-radius:4px;padding:2px 10px;cursor:pointer;">Simpan</button>
+                                    </form>
+                                </td>
+                                <td>
+                                    <form th:action="@{/user/ambilmatkul/delete/{id}(id=${am.id})}" method="post" style="display:inline;">
+                                        <input type="hidden" name="semesterId" th:value="${selectedSemesterId}" />
+                                        <button type="submit" style="background:#ff4d4f;color:#fff;border:none;border-radius:6px;padding:4px 8px;cursor:pointer;">Batal</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
         <!-- Panel Mata Kuliah -->
         <div class="matakuliah-panel">
             <div style="display: flex; justify-content: space-between; align-items: center;">
                 <h3>Mata Kuliah</h3>
-                <a th:href="@{/user/matakuliah}" style="background:#6c63ff;color:#fff;border:none;border-radius:8px;padding:6px 14px;cursor:pointer;text-decoration:none;display:inline-block;">+ Tambah</a>
+                <!-- <a th:href="@{/user/matakuliah}" style="background:linear-gradient(135deg, #667eea, #764ba2);color:#fff;border:none;border-radius:8px;padding:8px 16px;cursor:pointer;text-decoration:none;display:inline-block;font-weight:600;font-size:12px;">+ Tambah</a> -->
             </div>
-            <div class="matakuliah-list">
+            
+            <div class="filter-section">
+                <div class="filter-row">
+                    <select id="filterJenis">
+                        <option value="">🔍 Semua Jenis</option>
+                        <option value="WAJIB">📌 Wajib</option>
+                        <option value="PILIHAN">⭐ Pilihan</option>
+                    </select>
+                    <select id="filterSks">
+                        <option value="">🔍 Semua SKS</option>
+                        <option value="1">1 SKS</option>
+                        <option value="2">2 SKS</option>
+                        <option value="3">3 SKS</option>
+                        <option value="4">4 SKS</option>
+                    </select>
+                    <select id="filterSemester">
+                        <option value="">🔍 Semua Semester</option>
+                        <option th:each="s : ${#numbers.sequence(1,12)}" th:value="${s}" th:text="'Semester ' + ${s}"></option>
+                    </select>
+                    <button type="button" onclick="resetFilter()" class="filter-reset">🔄 Reset Filter</button>
+                </div>
+            </div>
+            
+            <div class="matakuliah-list" id="matakuliahList">
                 <div class="mk-card"
-                     th:each="mk : ${matakuliahList}"
-                     th:classappend="${#lists.contains(ambilMatkulMkIds, mk.id)} ? 'bg-[#e6ffe6]' : ''">
+                    th:each="mk : ${matakuliahList}"
+                    th:classappend="${selectedSemesterId != null and #lists.contains(ambilMatkulMkIds, mk.id)} ? 'taken' : ''"
+                    th:attr="data-jenis=${mk.jenisMk},data-sks=${mk.sks},data-semester=${mk.defaultSemester}"
+                    style="position:relative;">
                     <span class="mk-title" th:text="${mk.namaMk}"></span>
                     <span class="mk-badge" th:text="${mk.jenisMk?.toString()?.toLowerCase()}"></span>
                     <span class="mk-info">
-                        Kode: <span th:text="${mk.kodeMk}"></span><br>
-                        SKS: <span th:text="${mk.sks}"></span><br>
-                        Semester: <span th:text="${mk.defaultSemester}"></span>
+                       📝 <span th:text="${mk.kodeMk}"></span><br>
+                       ⚖️ <span th:text="${mk.sks}"></span> SKS<br>
+                       📅 Semester <span th:text="${mk.defaultSemester}"></span>
                     </span>
                     <form th:if="${selectedSemesterId != null and !#lists.contains(ambilMatkulMkIds, mk.id)}"
-                          th:action="@{/user/ambilmatkul/add}" method="post" style="margin-top:8px;">
-                        <input type="hidden" name="rencanaStudiId" th:value="${selectedSemesterId}" />
-                        <input type="hidden" name="mataKuliahId" th:value="${mk.id}" />
-                        <button type="submit" style="background:#3b3bff;color:#fff;border:none;border-radius:6px;padding:4px 12px;cursor:pointer;">Add</button>
+                        th:action="@{/user/ambilmatkul/add}" method="post" style="margin-top:8px;">
+                       <input type="hidden" name="rencanaStudiId" th:value="${selectedSemesterId}" />
+                       <input type="hidden" name="mataKuliahId" th:value="${mk.id}" />
+                       <button type="submit" class="btn-add">➕ Add</button>
                     </form>
-                    <span th:if="${#lists.contains(ambilMatkulMkIds, mk.id)}" style="margin-top:8px;display:inline-block;background:#b2f2bb;color:#2b8a3e;padding:4px 12px;border-radius:6px;">Diambil</span>
+                    <span th:if="${selectedSemesterId != null and #lists.contains(ambilMatkulMkIds, mk.id)}"
+                        class="status-taken"
+                        style="position:absolute; right:16px; bottom:16px; margin:0;">✅ Diambil</span>
                 </div>
             </div>
         </div>
     </div>
+    
+    <script>
+        // Aktifkan filter client-side
+        document.addEventListener('DOMContentLoaded', function() {
+            const jenis = document.getElementById('filterJenis');
+            const sks = document.getElementById('filterSks');
+            const semester = document.getElementById('filterSemester');
+            const list = document.getElementById('matakuliahList');
+            function filter() {
+                const jenisVal = jenis.value;
+                const sksVal = sks.value;
+                const semesterVal = semester.value;
+                Array.from(list.children).forEach(function(card) {
+                    let show = true;
+                    if (jenisVal && card.getAttribute('data-jenis') !== jenisVal) show = false;
+                    if (sksVal && card.getAttribute('data-sks') !== sksVal) show = false;
+                    if (semesterVal && card.getAttribute('data-semester') !== semesterVal) show = false;
+                    card.style.display = show ? '' : 'none';
+                });
+            }
+            jenis.addEventListener('change', filter);
+            sks.addEventListener('change', filter);
+            semester.addEventListener('change', filter);
+            window.resetFilter = function() {
+                jenis.value = '';
+                sks.value = '';
+                semester.value = '';
+                filter();
+            }
+            // Jalankan filter saat halaman pertama kali dimuat (agar konsisten)
+            filter();
+        });
+    </script>
 </body>
 </html>
