@@ -3,41 +3,37 @@ package com.example.planydy.service;
 import com.example.planydy.model.User;
 import com.example.planydy.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.*;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
-import java.util.Collections;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+
 import java.util.List;
 
 @Service
 public class UserService implements UserDetailsService {
     @Autowired
-    private UserRepository userRepository;
+    private UserRepository userRepo;
 
     public List<User> findAll() {
-        return userRepository.findAll();
-    }
-
-    public List<User> findAllUsers() {
-        return userRepository.findAll();
+        return userRepo.findAll();
     }
 
     public User findById(Long id) {
-        return userRepository.findById(id).orElse(null);
+        return userRepo.findById(id).orElse(null);
+    }
+
+    public void save(User user) {
+        userRepo.save(user);
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(username)
-            .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-        return new org.springframework.security.core.userdetails.User(
-            user.getUsername(),
-            user.getPassword(),
-            Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + user.getRole().name()))
-        );
-    }
-
-    public User save(User user) {
-        return userRepository.save(user);
+        User user = userRepo.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        return org.springframework.security.core.userdetails.User
+                .withUsername(user.getUsername())
+                .password(user.getPassword())
+                .roles(user.getRole().name())
+                .build();
     }
 }

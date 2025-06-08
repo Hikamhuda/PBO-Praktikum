@@ -66,7 +66,7 @@ public class User {
         this.namaLengkap = namaLengkap;
     }
 
-    public Role getRole() {
+    public User.Role getRole() {
         return role;
     }
 

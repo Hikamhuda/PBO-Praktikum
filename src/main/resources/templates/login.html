@@ -4,104 +4,884 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Planydy - Login</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: {
-                            light: "#6366f1",
-                            DEFAULT: "#4f46e5",
-                            dark: "#4338ca"
-                        },
-                        secondary: {
-                            light: "#f97316",
-                            DEFAULT: "#ea580c",
-                            dark: "#c2410c"
-                        }
-                    },
-                    fontFamily: {
-                        sans: ['Poppins', 'sans-serif'],
-                    },
-                }
+    <style>
+        body {
+            margin: 0;
+            font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: linear-gradient(135deg, #fafafa 0%, #fafafa 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .login-card {
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+            overflow: hidden;
+            width: 100%;
+            max-width: 900px;
+            min-height: 600px;
+            display: flex;
+            animation: slideUp 0.8s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
             }
         }
-    </script>
-    <style>
-        .auth-bg {
-            background: linear-gradient(135deg, rgba(99,102,241,0.1) 0%, rgba(234,88,12,0.1) 100%);
+
+        /* Left Panel - Illustration */
+        .illustration-panel {
+            flex: 1;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 60px 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
         }
-        .btn-primary {
-            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+
+        .illustration-panel::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: float 20s linear infinite;
         }
-        .btn-primary:hover {
-            background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%);
+
+        @keyframes float {
+            0% { transform: rotate(0deg) translate(-50%, -50%); }
+            100% { transform: rotate(360deg) translate(-50%, -50%); }
+        }
+
+        .illustration-content {
+            position: relative;
+            z-index: 2;
+            max-width: 320px;
+        }
+
+        .illustration {
+            width: 280px;
+            height: 200px;
+            margin-bottom: 40px;
+            position: relative;
+            animation: bounceIn 1s ease-out 0.3s both;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            perspective: 1000px;
+        }
+
+        /* Enhanced 3D Typography P */
+        .typography-p {
+            font-size: 150px;
+            font-weight: 900;
+            font-family: "Inter", sans-serif;
+            position: relative;
+            color: transparent;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            background-clip: text;
+            text-shadow: 
+                0 0 30px rgba(102, 126, 234, 0.5),
+                0 0 60px rgba(118, 75, 162, 0.3);
+            animation: rotate3D 8s ease-in-out infinite;
+            transform-style: preserve-3d;
+        }
+
+        .typography-p::before {
+            content: 'P';
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            background: linear-gradient(135deg, #4c1d95, #312e81, #1e1b4b);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            z-index: -1;
+            animation: shadowMove 4s ease-in-out infinite;
+        }
+
+        .typography-p::after {
+            content: 'P';
+            position: absolute;
+            top: 6px;
+            left: 6px;
+            background: linear-gradient(135deg, #1e1b4b, #0f0f23);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            z-index: -2;
+            opacity: 0.6;
+            animation: deepShadow 4s ease-in-out infinite;
+        }
+
+        /* 3D layers for depth */
+        .typography-p .layer-1,
+        .typography-p .layer-2,
+        .typography-p .layer-3 {
+            position: absolute;
+            top: 0;
+            left: 0;
+            font-size: 150px;
+            font-weight: 900;
+            font-family: "Inter", sans-serif;
+            pointer-events: none;
+        }
+
+        .typography-p .layer-1 {
+            color: transparent;
+            background: linear-gradient(45deg, #8b5cf6, #a855f7);
+            -webkit-background-clip: text;
+            background-clip: text;
+            transform: translateZ(10px);
+            animation: layer1Float 6s ease-in-out infinite;
+        }
+
+        .typography-p .layer-2 {
+            color: transparent;
+            background: linear-gradient(45deg, #3306d4, #978ddf);
+            -webkit-background-clip: text;
+            background-clip: text;
+            transform: translateZ(20px);
+            animation: layer2Float 6s ease-in-out infinite 1s;
+        }
+
+        .typography-p .layer-3 {
+            /* color: transparent; */
+            background: linear-gradient(45deg, #f9f9f9, #fbf1ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            transform: translateZ(30px);
+            animation: layer3Float 6s ease-in-out infinite 2s;
+        }
+
+        @keyframes rotate3D {
+            0%, 100% { 
+                transform: rotateY(0deg) rotateX(0deg);
+            }
+            25% { 
+                transform: rotateY(15deg) rotateX(5deg);
+            }
+            50% { 
+                transform: rotateY(0deg) rotateX(-5deg);
+            }
+            75% { 
+                transform: rotateY(-15deg) rotateX(5deg);
+            }
+        }
+
+        @keyframes shadowMove {
+            0%, 100% { 
+                transform: translate(3px, 3px);
+                opacity: 0.8;
+            }
+            50% { 
+                transform: translate(8px, 8px);
+                opacity: 0.6;
+            }
+        }
+
+        @keyframes deepShadow {
+            0%, 100% { 
+                transform: translate(6px, 6px);
+                opacity: 0.6;
+            }
+            50% { 
+                transform: translate(12px, 12px);
+                opacity: 0.4;
+            }
+        }
+
+        @keyframes layer1Float {
+            0%, 100% { 
+                transform: translateZ(10px) translateY(0px);
+                opacity: 0.9;
+            }
+            50% { 
+                transform: translateZ(15px) translateY(-5px);
+                opacity: 0.7;
+            }
+        }
+
+        @keyframes layer2Float {
+            0%, 100% { 
+                transform: translateZ(20px) translateY(0px);
+                opacity: 0.8;
+            }
+            50% { 
+                transform: translateZ(25px) translateY(-8px);
+                opacity: 0.6;
+            }
+        }
+
+        @keyframes layer3Float {
+            0%, 100% { 
+                transform: translateZ(30px) translateY(0px);
+                opacity: 0.7;
+            }
+            50% { 
+                transform: translateZ(35px) translateY(-10px);
+                opacity: 0.5;
+            }
+        }
+
+        /* Floating particles around P */
+        .particles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            transform-style: preserve-3d;
+        }
+
+        .particle {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: radial-gradient(circle, rgba(255,255,255,0.9), rgba(102, 126, 234, 0.6));
+            border-radius: 50%;
+            box-shadow: 
+                0 0 10px rgba(255,255,255,0.8),
+                0 0 20px rgba(102, 126, 234, 0.6);
+            animation: floatParticle3D 8s ease-in-out infinite;
+        }
+
+        .particle:nth-child(1) {
+            top: 20%;
+            left: 10%;
+            animation-delay: 0s;
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.9), rgba(168, 85, 247, 0.6));
+        }
+
+        .particle:nth-child(2) {
+            top: 30%;
+            right: 15%;
+            animation-delay: 1s;
+            background: radial-gradient(circle, rgba(6, 182, 212, 0.9), rgba(8, 145, 178, 0.6));
+        }
+
+        .particle:nth-child(3) {
+            bottom: 25%;
+            left: 20%;
+            animation-delay: 2s;
+            background: radial-gradient(circle, rgba(16, 185, 129, 0.9), rgba(5, 150, 105, 0.6));
+        }
+
+        .particle:nth-child(4) {
+            bottom: 40%;
+            right: 10%;
+            animation-delay: 3s;
+            background: radial-gradient(circle, rgba(245, 158, 11, 0.9), rgba(217, 119, 6, 0.6));
+        }
+
+        .particle:nth-child(5) {
+            top: 50%;
+            left: 5%;
+            animation-delay: 4s;
+            background: radial-gradient(circle, rgba(239, 68, 68, 0.9), rgba(220, 38, 38, 0.6));
+        }
+
+        .particle:nth-child(6) {
+            top: 60%;
+            right: 25%;
+            animation-delay: 5s;
+            background: radial-gradient(circle, rgba(102, 126, 234, 0.9), rgba(118, 75, 162, 0.6));
+        }
+
+        @keyframes floatParticle3D {
+            0%, 100% {
+                transform: translateY(0px) translateX(0px) translateZ(0px) scale(1);
+                opacity: 0.8;
+            }
+            25% {
+                transform: translateY(-30px) translateX(15px) translateZ(20px) scale(1.3);
+                opacity: 1;
+            }
+            50% {
+                transform: translateY(-50px) translateX(-10px) translateZ(40px) scale(0.9);
+                opacity: 0.9;
+            }
+            75% {
+                transform: translateY(-30px) translateX(-20px) translateZ(20px) scale(1.2);
+                opacity: 1;
+            }
+        }
+
+        /* Background geometric shapes */
+        .geometric-bg {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -1;
+            transform-style: preserve-3d;
+        }
+
+        .geo-shape {
+            position: absolute;
+            border-radius: 50%;
+            background: linear-gradient(45deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.05));
+            animation: rotateShape3D 20s linear infinite;
+            box-shadow: 
+                inset 0 0 20px rgba(255,255,255,0.1),
+                0 0 30px rgba(102, 126, 234, 0.2);
+        }
+
+        .geo-1 {
+            width: 100px;
+            height: 100px;
+            top: 5%;
+            left: -30px;
+            animation-duration: 25s;
+            background: linear-gradient(45deg, rgba(139, 92, 246, 0.1), rgba(168, 85, 247, 0.05));
+        }
+
+        .geo-2 {
+            width: 80px;
+            height: 80px;
+            top: 65%;
+            right: -40px;
+            animation-duration: 22s;
+            animation-direction: reverse;
+            background: linear-gradient(45deg, rgba(6, 182, 212, 0.1), rgba(8, 145, 178, 0.05));
+        }
+
+        .geo-3 {
+            width: 60px;
+            height: 60px;
+            top: 35%;
+            left: -20px;
+            animation-duration: 30s;
+            background: linear-gradient(45deg, rgba(16, 185, 129, 0.1), rgba(5, 150, 105, 0.05));
+        }
+
+        @keyframes rotateShape3D {
+            0% {
+                transform: rotate(0deg) translateX(60px) rotateY(0deg) translateZ(0px);
+            }
+            50% {
+                transform: rotate(180deg) translateX(80px) rotateY(180deg) translateZ(30px);
+            }
+            100% {
+                transform: rotate(360deg) translateX(60px) rotateY(360deg) translateZ(0px);
+            }
+        }
+
+        @keyframes bounceIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.3) rotateY(-180deg);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1.05) rotateY(-90deg);
+            }
+            70% {
+                transform: scale(0.95) rotateY(-45deg);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) rotateY(0deg);
+            }
+        }
+
+        /* Remove old workspace styles */
+        .workspace, .desk, .laptop, .person, .person-head, .person-body, 
+        .floating-elements, .floating-card, .card-1, .card-2, .card-3 {
+            display: none;
+        }
+
+        .main-title {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            animation: slideInLeft 0.8s ease-out 0.5s both;
+        }
+
+        .subtitle {
+            font-size: 16px;
+            opacity: 0.9;
+            font-weight: 400;
+            line-height: 1.5;
+            animation: slideInLeft 0.8s ease-out 0.7s both;
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* Right Panel - Form */
+        .form-panel {
+            flex: 1;
+            padding: 60px 50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            background: #fafafa;
+        }
+
+        .form-container {
+            max-width: 360px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .form-header {
+            margin-bottom: 40px;
+            animation: slideInRight 0.8s ease-out 0.4s both;
+        }
+
+        .form-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 8px;
+        }
+
+        .form-subtitle {
+            color: #6b7280;
+            font-size: 15px;
+        }
+
+        .form-subtitle a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            animation: slideInRight 0.6s ease-out both;
+        }
+
+        .form-group:nth-child(2) { animation-delay: 0.5s; }
+        .form-group:nth-child(3) { animation-delay: 0.6s; }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+            background: white;
+        }
+
+        .form-input:focus {
+            border-color: #667eea;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .form-input.error {
+            border-color: #ef4444;
+            animation: shake 0.5s ease-in-out;
+        }
+
+        .form-input.success {
+            border-color: #10b981;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-3px); }
+            20%, 40%, 60%, 80% { transform: translateX(3px); }
+        }
+
+        .country-select {
+            position: relative;
+        }
+
+        .country-flag {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 16px;
+        }
+
+        .form-input.with-flag {
+            padding-left: 50px;
+        }
+
+        .submit-button {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 24px;
+            animation: slideInRight 0.6s ease-out 0.7s both;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .submit-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+            transition: left 0.3s ease;
+            z-index: -1;
+        }
+
+        .submit-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .submit-button:hover::before {
+            left: 0;
+        }
+
+        .submit-button.loading {
+            background: linear-gradient(135deg, #a0aec0, #718096);
+            pointer-events: none;
+            position: relative;
+            color: transparent;
+        }
+
+        .submit-button.loading::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            margin: -10px 0 0 -10px;
+            border: 2px solid #ffffff;
+            border-top: 2px solid transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .divider {
+            text-align: center;
+            margin: 24px 0;
+            color: #9ca3af;
+            font-size: 14px;
+            position: relative;
+            animation: slideInRight 0.6s ease-out 0.8s both;
+        }
+
+        .divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: #e5e7eb;
+            z-index: -1;
+        }
+
+        .divider span {
+            background: #fafafa;
+            padding: 0 16px;
+        }
+
+        .social-login {
+            display: flex;
+            gap: 12px;
+            animation: slideInRight 0.6s ease-out 0.9s both;
+        }
+
+        .social-button {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .social-button:hover {
+            border-color: #667eea;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+        }
+
+        .error-message {
+            color: #ef4444;
+            font-size: 12px;
+            margin-top: 4px;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+        }
+
+        .error-message.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            body {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            }
+            
+            .login-card {
+                flex-direction: column;
+                margin: 10px;
+                border-radius: 16px;
+            }
+
+            .illustration-panel {
+                padding: 40px 20px;
+                min-height: 300px;
+            }
+
+            .form-panel {
+                padding: 40px 20px;
+            }
+
+            .main-title {
+                font-size: 24px;
+            }
+
+            .illustration {
+                width: 200px;
+                height: 150px;
+            }
         }
     </style>
 </head>
-<body class="min-h-screen flex items-center justify-center auth-bg font-sans">
-    <div class="w-full max-w-md px-8 py-12 mx-4 bg-white rounded-2xl shadow-xl">
-        <div class="text-center mb-10">
-            <div class="w-20 h-20 bg-primary-light rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                </svg>
+<body>
+    <div class="login-card">
+        <!-- Illustration Panel -->
+        <div class="illustration-panel">
+            <div class="illustration-content">
+                <div class="illustration">
+                    <div class="geometric-bg">
+                        <div class="geo-shape geo-1"></div>
+                        <div class="geo-shape geo-2"></div>
+                        <div class="geo-shape geo-3"></div>
+                    </div>
+                    <div class="typography-p">
+                        P
+                        <span class="layer-1">P</span>
+                        <span class="layer-2">P</span>
+                        <span class="layer-3">P</span>
+                    </div>
+                    <div class="particles">
+                        <div class="particle"></div>
+                        <div class="particle"></div>
+                        <div class="particle"></div>
+                        <div class="particle"></div>
+                        <div class="particle"></div>
+                        <div class="particle"></div>
+                    </div>
+                </div>
+                <h2 class="main-title">Plan Your Study!</h2>
+                <p class="subtitle">Platform terbaik untuk merencanakan perjalanan akademik dengan mudah dan terstruktur</p>
             </div>
-            <h1 class="text-3xl font-bold text-gray-800">Welcome to Planydy</h1>
-            <p class="text-gray-500 mt-2">Plan your study journey effectively</p>
         </div>
 
-        <form method="post" action="/api/auth/login" class="space-y-6">
-            <div>
-                <label for="username" class="block text-sm font-medium text-gray-700 mb-1">Username</label>
-                <div class="relative">
-                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
-                        </svg>
+        <!-- Form Panel -->
+        <div class="form-panel">
+            <div class="form-container">
+                <div class="form-header">
+                    <h1 class="form-title">Masuk</h1>
+                    <p class="form-subtitle">Belum punya akun? <a href="/register" th:href="@{/register}">Register</a></p>
+                </div>
+
+                <form method="post" action="/api/auth/login" id="loginForm">
+                    <div class="form-group">
+                        <label class="form-label" for="username">Username</label>
+                        <input type="text" id="username" name="username" class="form-input" 
+                               placeholder="Masukkan username Anda">
+                        <div class="error-message" id="usernameError"></div>
                     </div>
-                    <input type="text" id="username" name="username" required
-                        class="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-light focus:border-transparent placeholder-gray-400 transition duration-200"
-                        placeholder="Enter your username">
-                </div>
-            </div>
 
-            <div>
-                <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
-                <div class="relative">
-                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
-                        </svg>
+                    <div class="form-group">
+                        <label class="form-label" for="password">Password</label>
+                        <input type="password" id="password" name="password" class="form-input" 
+                               placeholder="Masukkan password Anda">
+                        <div class="error-message" id="passwordError"></div>
                     </div>
-                    <input type="password" id="password" name="password" required
-                        class="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-light focus:border-transparent placeholder-gray-400 transition duration-200"
-                        placeholder="Enter your password">
-                </div>
+
+                    <button type="submit" class="submit-button" id="loginButton">
+                        Masuk
+                    </button>
+                </form>
             </div>
-
-            <!-- <div class="flex items-center justify-between">
-                <div class="flex items-center">
-                    <input id="remember-me" name="remember-me" type="checkbox" 
-                        class="h-4 w-4 text-primary-light focus:ring-primary-light border-gray-300 rounded">
-                    <label for="remember-me" class="ml-2 block text-sm text-gray-700">Remember me</label>
-                </div>
-                <a href="#" class="text-sm text-primary-light hover:text-primary-dark font-medium">Forgot password?</a>
-            </div> -->
-
-            <button type="submit" 
-                class="w-full btn-primary text-white py-3 px-4 rounded-lg font-medium hover:shadow-md transition duration-200">
-                Login
-            </button>
-        </form>
-
-        <div class="mt-8 text-center">
-            <p class="text-gray-600">Belum punya akun? 
-                <a th:href="@{/register}" href="/register" class="text-primary-light hover:text-primary-dark font-medium">Daftar di sini</a>
-            </p>
         </div>
     </div>
+
+    <script>
+        // Form validation and interactivity
+        const form = document.getElementById('loginForm');
+        const usernameInput = document.getElementById('username');
+        const passwordInput = document.getElementById('password');
+        const loginButton = document.getElementById('loginButton');
+
+        // Real-time validation
+        usernameInput.addEventListener('input', function() {
+            validateUsername();
+        });
+
+        passwordInput.addEventListener('input', function() {
+            validatePassword();
+        });
+
+        // Form submission with loading state
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            if (validateForm()) {
+                loginButton.classList.add('loading');
+                loginButton.textContent = '';
+                
+                // Simulate loading (replace with actual form submission)
+                setTimeout(() => {
+                    form.submit();
+                }, 1500);
+            }
+        });
+
+        function validateUsername() {
+            const username = usernameInput.value.trim();
+            const errorElement = document.getElementById('usernameError');
+            
+            if (username.length === 0) {
+                showError(usernameInput, errorElement, '');
+                return false;
+            } else if (username.length < 3) {
+                showError(usernameInput, errorElement, 'Username minimal 3 karakter');
+                return false;
+            } else {
+                showSuccess(usernameInput, errorElement);
+                return true;
+            }
+        }
+
+        function validatePassword() {
+            const password = passwordInput.value;
+            const errorElement = document.getElementById('passwordError');
+            
+            if (password.length === 0) {
+                showError(passwordInput, errorElement, '');
+                return false;
+            } else if (password.length < 4) {
+                showError(passwordInput, errorElement, 'Password minimal 4 karakter');
+                return false;
+            } else {
+                showSuccess(passwordInput, errorElement);
+                return true;
+            }
+        }
+
+        function validateForm() {
+            return validateUsername() && validatePassword();
+        }
+
+        function showError(input, errorElement, message) {
+            input.classList.add('error');
+            input.classList.remove('success');
+            errorElement.textContent = message;
+            errorElement.classList.add('show');
+        }
+
+        function showSuccess(input, errorElement) {
+            input.classList.remove('error');
+            input.classList.add('success');
+            errorElement.textContent = '';
+            errorElement.classList.remove('show');
+        }
+
+        // Logo animation
+        function animateLogo() {
+            const logo = document.querySelector('.logo-large');
+            logo.style.animation = 'bounceIn 0.6s ease-out';
+            setTimeout(() => {
+                logo.style.animation = '';
+            }, 600);
+        }
+
+        // Add floating animation to feature icons
+        document.querySelectorAll('.feature-icon').forEach((icon, index) => {
+            setInterval(() => {
+                icon.style.transform = `translateY(${Math.sin(Date.now() * 0.002 + index) * 3}px)`;
+            }, 50);
+        });
+
+        // Parallax effect for info panel background
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const infoPanel = document.querySelector('.info-panel');
+            if (infoPanel) {
+                infoPanel.style.transform = `translateY(${scrolled * 0.5}px)`;
+            }
+        });
+    </script>
 </body>
 </html>

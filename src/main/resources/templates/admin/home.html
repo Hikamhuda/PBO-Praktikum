@@ -1,253 +1,1020 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Dashboard</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Dashboard</title>
     <style>
-        body {
-            margin: 0;
-            font-family: 'Segoe UI', Arial, sans-serif;
-            background: #f6f9ff;
-        }
-        .container {
-            display: flex;
-            height: 100vh;
-        }
-        .sidebar {
-            width: 260px;
-            background: #fff;
-            border-right: 1px solid #e5eaf1;
-            padding: 24px 16px;
-            box-sizing: border-box;
-        }
-        .sidebar h2 {
-            color: #3b3bff;
-            margin-top: 0;
-            margin-bottom: 32px;
-            font-size: 28px;
-            font-weight: 700;
-            letter-spacing: 1px;
-        }
-        .semester-list {
-            margin-top: 24px;
-        }
-        .semester-list input[type="text"] {
-            width: 70%;
-            padding: 6px 8px;
-            border: 1px solid #d0d7e2;
-            border-radius: 6px;
-            margin-bottom: 8px;
-        }
-        .semester-list button {
-            padding: 6px 14px;
-            background: #6c63ff;
-            color: #fff;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            margin-left: 4px;
-        }
-        .semester-btn {
-            display: block;
-            width: 100%;
-            margin: 6px 0;
-            padding: 10px 12px;
-            background: #f6f9ff;
-            border: 1px solid #d0d7e2;
-            border-radius: 8px;
-            text-align: left;
-            cursor: pointer;
-            font-size: 16px;
-            color: #3b3bff;
-            transition: background 0.2s;
-        }
-        .semester-btn:hover {
-            background: #e5eaf1;
-        }
-        .main-content {
-            flex: 1;
-            padding: 36px 32px;
-            background: #f6f9ff;
-            display: flex;
-            flex-direction: column;
-        }
-        .panel {
-            background: #fff;
-            border-radius: 16px;
-            box-shadow: 0 2px 8px #e5eaf1;
-            padding: 32px;
-            margin-bottom: 24px;
-        }
-        .panel h3 {
-            margin-top: 0;
-            color: #3b3bff;
-            font-size: 22px;
-        }
-        .panel .empty {
-            color: #888;
-            text-align: center;
-            margin-top: 40px;
-        }
-        .matakuliah-panel {
-            width: 320px;
-            background: #fff;
-            border-left: 1px solid #e5eaf1;
-            padding: 24px 16px;
-            box-sizing: border-box;
-        }
-        .matakuliah-panel h3 {
-            color: #3b3bff;
-            margin-top: 0;
-            margin-bottom: 16px;
-            font-size: 20px;
-        }
-        .matakuliah-list {
-            max-height: 70vh;
-            overflow-y: auto;
-        }
-        .mk-card {
-            background: #f6f9ff;
-            border: 1px solid #d0d7e2;
-            border-radius: 10px;
-            padding: 14px 16px;
-            margin-bottom: 12px;
-            box-shadow: 0 1px 2px #e5eaf1;
-        }
-        .mk-card .mk-title {
-            font-weight: 600;
-            font-size: 16px;
-            margin-bottom: 2px;
-        }
-        .mk-card .mk-info {
-            font-size: 13px;
-            color: #555;
-        }
-        .mk-card .mk-badge {
-            float: right;
-            background: #6c63ff;
-            color: #fff;
-            border-radius: 8px;
-            padding: 2px 10px;
-            font-size: 12px;
-            font-weight: 500;
-        }
-        .topbar {
-            width: 100%;
-            background: #fff;
-            border-bottom: 1px solid #e5eaf1;
-            padding: 16px 32px;
-            box-sizing: border-box;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        .topbar .logo {
-            font-size: 24px;
-            font-weight: 700;
-            color: #3b3bff;
-            letter-spacing: 1px;
-        }
-        .dropdown-content {
-            display: none;
-            position: absolute;
-            right: 0;
-            top: 110%;
-            background: #fff;
-            border: 1px solid #e5eaf1;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px #e5eaf1;
-            min-width: 140px;
-            z-index: 10;
-        }
-        .dropdown-content button {
-            width: 100%;
-            background: none;
-            border: none;
-            padding: 10px 18px;
-            text-align: left;
-            color: #ff4d4f;
-            cursor: pointer;
-        }
-        .sidebar a.active {
-            background: #e5eaf1;
-            border-radius: 6px;
-            color: #2323b5 !important;
-        }
+      body {
+        margin: 0;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: #f8fafc;
+        min-height: 100vh;
+      }
+
+      .topbar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        width: 100%;
+        height: 70px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 0 32px;
+        box-sizing: border-box;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        z-index: 1000;
+      }
+
+      .container {
+        display: flex;
+        height: 100vh;
+        background: #f8fafc;
+        padding-top: 70px;
+      }
+
+      .sidebar {
+        position: fixed;
+        top: 70px;
+        left: 0;
+        width: 280px;
+        height: calc(100vh - 70px);
+        background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+        border-right: 1px solid #e2e8f0;
+        padding: 24px 20px;
+        box-sizing: border-box;
+        box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+        overflow-y: auto;
+      }
+
+      .sidebar h2 {
+        color: #2d3748;
+        margin-top: 0;
+        margin-bottom: 24px;
+        font-size: 24px;
+        font-weight: 700;
+        text-align: center;
+        padding: 12px;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .search-container {
+        position: relative;
+        margin-bottom: 16px;
+      }
+
+      .search-icon {
+        position: absolute;
+        left: 12px;
+        top: 20%;
+        /* transform: translateY(-50%); */
+        color: #94a3b8;
+        font-size: 16px;
+        pointer-events: none;
+        z-index: 2;
+        line-height: 1;
+      }
+
+      .user-list input[type="text"] {
+        width: 100%;
+        padding: 10px 12px 10px 40px;
+        border: 2px solid #e2e8f0;
+        border-radius: 8px;
+        margin-bottom: 12px;
+        font-size: 14px;
+        transition: border-color 0.3s ease;
+        box-sizing: border-box;
+      }
+
+      .user-list input[type="text"]:focus {
+        border-color: #667eea;
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+      }
+
+      .user-btn {
+        display: flex;
+        width: calc(100% - 16px);
+        margin: 8px 0;
+        padding: 12px 16px;
+        background: #ffffff;
+        border: 2px solid #e2e8f0;
+        border-radius: 12px;
+        text-align: left;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 500;
+        color: #4a5568;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        text-decoration: none;
+        align-items: center;
+        justify-content: flex-start;
+        box-sizing: border-box;
+      }
+
+      .user-btn:hover {
+        border-color: #667eea;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+      }
+
+      .user-btn.selected {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        border-color: #667eea;
+        color: white;
+        font-weight: 600;
+      }
+
+      .user-btn.selected:hover {
+        background: linear-gradient(135deg, #5a6fd8, #6b42a1);
+        border-color: #5a6fd8;
+      }
+
+      .main-content {
+        flex: 1;
+        margin-left: 280px;
+        margin-right: 340px;
+        padding: 24px;
+        background: #f8fafc;
+        height: calc(100vh - 70px);
+        overflow-y: auto;
+      }
+
+      .panel {
+        background: #ffffff;
+        border-radius: 16px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        padding: 24px;
+        margin-bottom: 24px;
+        border: 1px solid #e2e8f0;
+      }
+
+      .panel h3 {
+        margin-top: 0;
+        margin-bottom: 16px;
+        color: #2d3748;
+        font-size: 24px;
+        font-weight: 700;
+      }
+
+      .panel .empty {
+        color: #64748b;
+        text-align: center;
+        padding: 40px 0;
+      }
+
+      .panel .empty div {
+        font-size: 48px;
+        margin-bottom: 16px;
+      }
+
+      .matakuliah-panel {
+        position: fixed;
+        top: 70px;
+        right: 0;
+        width: 340px;
+        height: calc(100vh - 70px);
+        background: #ffffff;
+        border-left: 1px solid #e2e8f0;
+        padding: 24px 20px;
+        box-sizing: border-box;
+        box-shadow: -2px 0 10px rgba(0, 0, 0, 0.05);
+        overflow-y: auto;
+      }
+
+      .matakuliah-panel h3 {
+        color: #2d3748;
+        margin-top: 0;
+        margin-bottom: 20px;
+        font-size: 20px;
+        font-weight: 700;
+      }
+
+      .filter-section {
+        background: #f8fafc;
+        padding: 16px;
+        border-radius: 12px;
+        margin-bottom: 16px;
+        border: 1px solid #e2e8f0;
+      }
+
+      .filter-row {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .filter-row select {
+        padding: 8px 12px;
+        border: 2px solid #e2e8f0;
+        border-radius: 8px;
+        font-size: 13px;
+        transition: border-color 0.3s ease;
+      }
+
+      .filter-row select:focus {
+        border-color: #667eea;
+        outline: none;
+      }
+
+      .filter-reset {
+        padding: 8px 16px;
+        border-radius: 8px;
+        background: #f1f5f9;
+        border: 1px solid #cbd5e1;
+        cursor: pointer;
+        font-size: 12px;
+        font-weight: 500;
+        color: #475569;
+        transition: all 0.2s ease;
+        margin-top: 8px;
+      }
+
+      .filter-reset:hover {
+        background: #e2e8f0;
+        border-color: #94a3b8;
+      }
+
+      .matakuliah-list {
+        max-height: 60vh;
+        overflow-y: auto;
+        padding-right: 4px;
+      }
+
+      .matakuliah-list::-webkit-scrollbar {
+        width: 4px;
+      }
+
+      .matakuliah-list::-webkit-scrollbar-track {
+        background: #f1f5f9;
+        border-radius: 2px;
+      }
+
+      .matakuliah-list::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 2px;
+      }
+
+      .mk-card {
+        background: #ffffff;
+        border: 2px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 16px;
+        margin-bottom: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+        position: relative;
+      }
+
+      .mk-card:hover {
+        border-color: #667eea;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 16px rgba(102, 126, 234, 0.15);
+      }
+
+      .mk-card .mk-title {
+        font-weight: 600;
+        font-size: 15px;
+        margin-bottom: 8px;
+        color: #2d3748;
+      }
+
+      .mk-card .mk-info {
+        font-size: 12px;
+        color: #64748b;
+        line-height: 1.4;
+      }
+
+      .mk-card .mk-badge {
+        float: right;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: #fff;
+        border-radius: 6px;
+        padding: 4px 8px;
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+      }
+
+      .mk-card .btn-add {
+        margin-top: 8px;
+        padding: 6px 12px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 12px;
+        font-weight: 600;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        transition: all 0.2s ease;
+      }
+
+      .mk-card .btn-add:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+      }
+
+      .topbar .logo {
+        font-size: 28px;
+        font-weight: 800;
+        color: #ffffff;
+        letter-spacing: 1px;
+      }
+
+      .topbar button {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: white;
+        border-radius: 8px;
+        padding: 8px 16px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .topbar button:hover {
+        background: rgba(255, 255, 255, 0.2);
+      }
+
+      .dropdown-content {
+        display: none;
+        position: absolute;
+        right: 0;
+        top: 110%;
+        background: #fff;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        min-width: 140px;
+        z-index: 10;
+      }
+
+      .relative.group:hover .dropdown-content {
+        display: block;
+      }
+
+      .dropdown-content button:hover {
+        background: #f8fafc;
+      }
+
+      .panel-semester {
+        margin-bottom: 28px;
+        border: 2px solid #e2e8f0;
+        border-radius: 14px;
+        background: #ffffff;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+        padding: 20px 24px;
+        transition: all 0.3s ease;
+      }
+
+      .panel-semester:hover {
+        border-color: #667eea;
+        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.1);
+      }
+
+      .panel-semester h4 {
+        margin: 0 0 10px 0;
+        color: #2d3748;
+        font-size: 18px;
+        font-weight: 700;
+      }
+
+      .panel-semester .ipk-row {
+        margin-bottom: 10px;
+        color: #64748b;
+        font-size: 14px;
+      }
+
+      .add-popup-bg {
+        display: none;
+        position: fixed;
+        z-index: 100;
+        left: 0;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.25);
+        align-items: center;
+        justify-content: center;
+      }
+
+      .add-popup-bg.active {
+        display: flex;
+      }
+
+      .add-popup {
+        background: #fff;
+        border-radius: 12px;
+        padding: 28px 32px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
+        min-width: 320px;
+      }
+
+      .add-popup h4 {
+        margin-top: 0;
+        color: #2d3748;
+        font-weight: 700;
+      }
+
+      .add-popup select,
+      .add-popup button {
+        margin-top: 12px;
+        padding: 8px 12px;
+        border-radius: 8px;
+        border: 2px solid #e2e8f0;
+        font-size: 14px;
+      }
+
+      .add-popup button {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: #fff;
+        border: none;
+        margin-right: 8px;
+        cursor: pointer;
+        font-weight: 600;
+      }
+
+      .add-popup .cancel-btn {
+        background: #f1f5f9;
+        color: #64748b;
+        border: 2px solid #e2e8f0;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 16px;
+        background: white;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      }
+
+      table th {
+        background: linear-gradient(135deg, #667eea15, #764ba215);
+        padding: 12px;
+        text-align: left;
+        font-weight: 600;
+        color: #2d3748;
+        border-bottom: 2px solid #e2e8f0;
+      }
+
+      table td {
+        padding: 12px;
+        border-bottom: 1px solid #f1f5f9;
+        color: #4a5568;
+      }
+
+      table tr:hover {
+        background: #f8fafc;
+      }
+
+      table button {
+        padding: 4px 8px;
+        border-radius: 4px;
+        border: none;
+        font-size: 12px;
+        cursor: pointer;
+        font-weight: 600;
+      }
+
+      table .btn-cancel {
+        background: #ef4444;
+        color: white;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div class="topbar">
-        <span class="logo">Planydy</span>
-        <div style="display:flex;align-items:center;gap:18px;">
-            <div class="relative group" style="position:relative;">
-                <button style="background:none;border:none;cursor:pointer;display:flex;align-items:center;gap:8px;">
-                    <span style="font-weight:600;" th:text="${#authentication.principal.username}">admin</span>
-                    <span style="color:#888;" th:text="${admin.namaLengkap}">Nama Admin</span>
-                    <svg style="width:16px;height:16px;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path d="M19 9l-7 7-7-7"/>
-                    </svg>
-                </button>
-                <div class="dropdown-content group-hover:block" style="display:none;position:absolute;right:0;top:110%;background:#fff;border:1px solid #e5eaf1;border-radius:8px;box-shadow:0 2px 8px #e5eaf1;min-width:140px;z-index:10;">
-                    <form th:action="@{/logout}" method="post" style="margin:0;">
-                        <button type="submit" style="width:100%;background:none;border:none;padding:10px 18px;text-align:left;color:#ff4d4f;cursor:pointer;">Logout</button>
-                    </form>
-                </div>
-            </div>
+      <span class="logo">Planydy</span>
+      <div style="display: flex; align-items: center; gap: 18px">
+        <div class="relative group" style="position: relative">
+          <button
+            style="
+              background: rgba(255, 255, 255, 0.1);
+              border: 1px solid rgba(255, 255, 255, 0.2);
+              cursor: pointer;
+              display: flex;
+              align-items: center;
+              gap: 8px;
+              color: white;
+              border-radius: 8px;
+              padding: 8px 16px;
+            "
+          >
+            <span
+              style="font-weight: 600"
+              th:text="${#authentication.principal.username}"
+              >admin</span
+            >
+            <span
+              style="color: rgba(255, 255, 255, 0.8)"
+              th:text="${admin.namaLengkap}"
+              >Nama Admin</span
+            >
+            <svg
+              style="width: 16px; height: 16px"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+            >
+              <path d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+          <div
+            class="dropdown-content group-hover:block"
+            style="
+              display: none;
+              position: absolute;
+              right: 0;
+              top: 110%;
+              background: #fff;
+              border: 1px solid #e5eaf1;
+              border-radius: 8px;
+              box-shadow: 0 2px 8px #e5eaf1;
+              min-width: 140px;
+              z-index: 10;
+            "
+          >
+            <form th:action="@{/logout}" method="post" style="margin: 0">
+              <button
+                type="submit"
+                style="
+                  width: 100%;
+                  background: none;
+                  border: none;
+                  padding: 10px 18px;
+                  text-align: left;
+                  color: #ff4d4f;
+                  cursor: pointer;
+                "
+              >
+                Logout
+              </button>
+            </form>
+          </div>
         </div>
-        <script>
-            // Simple dropdown toggle for pure HTML/CSS fallback
-            document.addEventListener('DOMContentLoaded', function() {
-                var btn = document.querySelector('.topbar .group > button');
-                var dropdown = document.querySelector('.topbar .dropdown-content');
-                if(btn && dropdown) {
-                    btn.addEventListener('click', function(e){
-                        e.stopPropagation();
-                        dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
-                    });
-                    document.addEventListener('click', function(){
-                        dropdown.style.display = 'none';
-                    });
-                }
+      </div>
+      <script>
+        // Simple dropdown toggle for pure HTML/CSS fallback
+        document.addEventListener("DOMContentLoaded", function () {
+          var btn = document.querySelector(".topbar .group > button");
+          var dropdown = document.querySelector(".topbar .dropdown-content");
+          if (btn && dropdown) {
+            btn.addEventListener("click", function (e) {
+              e.stopPropagation();
+              dropdown.style.display =
+                dropdown.style.display === "block" ? "none" : "block";
             });
-        </script>
+            document.addEventListener("click", function () {
+              dropdown.style.display = "none";
+            });
+          }
+        });
+      </script>
     </div>
+
     <div class="container">
-        <div class="sidebar">
-            <h2>Admin Menu</h2>
-            <ul style="list-style:none;padding:0;">
-                <li>
-                    <a href="/admin/home"
-                       class="active"
-                       style="text-decoration:none;color:#3b3bff;font-weight:500;display:block;padding:8px 0;">
-                        Dashboard
-                    </a>
-                </li>
-                <li>
-                    <a href="/admin/matakuliah"
-                       style="text-decoration:none;color:#3b3bff;font-weight:500;display:block;padding:8px 0;">
-                        Manajemen Mata Kuliah
-                    </a>
-                </li>
-                <li>
-                    <a href="/admin/rencana-studi"
-                       style="text-decoration:none;color:#3b3bff;font-weight:500;display:block;padding:8px 0;">
-                        Rencana Studi
-                    </a>
-                </li>
-            </ul>
-        </div>
-        <div class="main-content">
-            <div class="panel">
-                <h3>Selamat datang, <span th:text="${admin.namaLengkap}">Administrator</span></h3>
-                <div>
-                    <!-- Konten dashboard admin di sini -->
-                    <p>Ini adalah halaman dashboard admin. Silakan tambahkan fitur admin sesuai kebutuhan.</p>
-                </div>
+      <!-- Sidebar User List -->
+      <div class="sidebar">
+        <h2>👤 User</h2>
+        <div class="user-list">
+          <form method="get" action="/admin/home" id="searchForm">
+            <div class="search-container">
+              <span class="search-icon">🔍</span>
+              <input
+                type="text"
+                name="search"
+                placeholder="Cari user..."
+                th:value="${param.search}"
+                oninput="handleSearch()"
+              />
             </div>
-            <!-- Panel CRUD Mata Kuliah dihapus dari sini -->
+            <input type="hidden" name="userId" th:value="${param.userId}" />
+          </form>
+          <div th:each="u : ${userList}">
+            <a
+              th:href="@{/admin/home(userId=${u.id}, search=${param.search})}"
+              th:classappend="${selectedUser != null and selectedUser.id == u.id} ? 'user-btn selected' : 'user-btn'"
+            >
+              <span th:text="${u.namaLengkap + ' (' + u.username + ')'}"></span>
+            </a>
+          </div>
         </div>
-        <!-- Panel Mata Kuliah dihapus untuk admin, jika tidak diperlukan -->
+      </div>
+
+      <!-- Panel Rencana Studi (tengah) -->
+      <div class="main-content">
+        <div class="panel">
+          <h3
+            th:text="'Rencana Studi ' + (${selectedUser != null ? selectedUser.namaLengkap : ''})"
+          >
+            Rencana Studi
+          </h3>
+          <div
+            th:if="${param.addMatkulError != null}"
+            style="
+              background: #ffeaea;
+              color: #d32f2f;
+              padding: 12px 18px;
+              border-radius: 8px;
+              margin-bottom: 18px;
+            "
+          >
+            <span th:text="${param.addMatkulError}"
+              >Mata kuliah sudah terdaftar di rencana studi</span
+            >
+          </div>
+          <div th:if="${selectedUser == null}" class="empty">
+            <div>👤</div>
+            <h4>Pilih User untuk Melihat Rencana Studi</h4>
+            <p style="font-size: 14px">
+              Pilih user di sidebar untuk melihat dan mengelola rencana studi
+              mereka
+            </p>
+          </div>
+          <div th:if="${selectedUser != null}">
+            <div style="margin-bottom: 18px">
+              <div
+                style="
+                  background: linear-gradient(90deg, #667eea, #764ba2);
+                  color: #fff;
+                  padding: 14px 18px;
+                  border-radius: 12px;
+                  display: flex;
+                  align-items: center;
+                  justify-content: space-between;
+                  box-shadow: 0 2px 8px #c3c3c3;
+                "
+              >
+                <span style="font-weight: 600; font-size: 15px"
+                  >IPK Keseluruhan</span
+                >
+                <span
+                  style="font-size: 20px; font-weight: 700"
+                  th:text="${ipkTotal != null ? #numbers.formatDecimal(ipkTotal, 1, 2) : '0.00'}"
+                  >0.00</span
+                >
+              </div>
+            </div>
+            <div th:if="${#lists.isEmpty(rencanaStudiList)}" class="empty">
+              <div>📋</div>
+              <h4>User belum memiliki rencana studi</h4>
+              <p style="font-size: 14px">
+                User ini belum membuat semester atau rencana studi apapun
+              </p>
+            </div>
+            <div th:each="rs : ${rencanaStudiList}" class="panel-semester">
+              <div
+                style="
+                  display: flex;
+                  align-items: center;
+                  justify-content: space-between;
+                  margin-bottom: 12px;
+                "
+              >
+                <h4 th:text="${rs.semester}"></h4>
+                <div style="display: flex; gap: 24px">
+                  <div
+                    style="
+                      background: linear-gradient(135deg, #667eea15, #764ba215);
+                      padding: 8px 18px;
+                      border-radius: 8px;
+                      font-weight: 600;
+                      color: #2d3748;
+                    "
+                  >
+                    Total SKS:
+                    <span
+                      th:text="${totalSksMap[rs.id] != null ? totalSksMap[rs.id] : 0}"
+                      >0</span
+                    >
+                  </div>
+                  <div
+                    style="
+                      background: linear-gradient(135deg, #667eea15, #764ba215);
+                      padding: 8px 18px;
+                      border-radius: 8px;
+                      font-weight: 600;
+                      color: #2d3748;
+                    "
+                  >
+                    IPK Semester:
+                    <span
+                      th:text="${ipkSemesterMap[rs.id] != null ? #numbers.formatDecimal(ipkSemesterMap[rs.id], 1, 2) : '0.00'}"
+                      >0.00</span
+                    >
+                  </div>
+                </div>
+              </div>
+              <div>
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Nama</th>
+                      <th>Kode</th>
+                      <th>SKS</th>
+                      <th>Jenis</th>
+                      <th>Nilai</th>
+                      <th>Aksi</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr th:each="am : ${ambilMatkulMap[rs.id]}">
+                      <td th:text="${am.mataKuliah.namaMk}">Nama</td>
+                      <td th:text="${am.mataKuliah.kodeMk}">Kode</td>
+                      <td th:text="${am.mataKuliah.sks}">SKS</td>
+                      <td th:text="${am.mataKuliah.jenisMk}">Jenis</td>
+                      <td th:text="${am.nilai}">Nilai</td>
+                      <td>
+                        <form
+                          th:action="@{/admin/ambilmatkul/delete/{id}(id=${am.id})}"
+                          method="post"
+                          style="display: inline"
+                        >
+                          <input
+                            type="hidden"
+                            name="userId"
+                            th:value="${selectedUser.id}"
+                          />
+                          <button type="submit" class="btn-cancel">
+                            Batal
+                          </button>
+                        </form>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Panel Mata Kuliah -->
+      <div class="matakuliah-panel">
+        <div
+          style="
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+          "
+        >
+          <h3 style="margin: 0">Mata Kuliah</h3>
+          <a
+            th:href="@{/admin/matakuliah}"
+            style="
+              background: linear-gradient(135deg, #667eea, #764ba2);
+              color: #fff;
+              border: none;
+              border-radius: 8px;
+              padding: 8px 16px;
+              cursor: pointer;
+              text-decoration: none;
+              display: inline-flex;
+              align-items: center;
+              gap: 6px;
+              font-weight: 600;
+              font-size: 13px;
+              transition: all 0.2s ease;
+              box-shadow: 0 2px 8px rgba(102, 126, 234, 0.2);
+            "
+            onmouseover="this.style.transform='translateY(-1px)'; this.style.boxShadow='0 4px 12px rgba(102, 126, 234, 0.3)';"
+            onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(102, 126, 234, 0.2)';"
+          >
+            <span style="font-size: 14px">➕</span>
+            Tambah
+          </a>
+        </div>
+
+        <!-- Search Bar -->
+        <div
+          class="search-container"
+          style="position: relative; margin-bottom: 16px"
+        >
+          <span
+            class="search-icon"
+            style="
+              position: absolute;
+              left: 12px;
+              top: 50%;
+              transform: translateY(-50%);
+              color: #94a3b8;
+              font-size: 14px;
+              pointer-events: none;
+              z-index: 1;
+            "
+            >🔍</span
+          >
+          <input
+            type="text"
+            id="mkSearchInput"
+            placeholder="Cari mata kuliah..."
+            style="
+              width: 100%;
+              padding: 8px 12px 8px 36px;
+              border: 2px solid #e2e8f0;
+              border-radius: 8px;
+              font-size: 14px;
+              transition: border-color 0.3s ease;
+              box-sizing: border-box;
+            "
+            onfocus="this.style.borderColor='#667eea'; this.style.boxShadow='0 0 0 3px rgba(102, 126, 234, 0.1)'"
+            onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none'"
+          />
+        </div>
+
+        <div class="filter-section">
+          <div class="filter-row">
+            <select id="filterJenis">
+              <option value="">🔍 Semua Jenis</option>
+              <option value="WAJIB">📌 Wajib</option>
+              <option value="PILIHAN">⭐ Pilihan</option>
+            </select>
+            <select id="filterSks">
+              <option value="">🔍 Semua SKS</option>
+              <option value="1">1 SKS</option>
+              <option value="2">2 SKS</option>
+              <option value="3">3 SKS</option>
+              <option value="4">4 SKS</option>
+            </select>
+            <select id="filterSemester">
+              <option value="">🔍 Semua Semester</option>
+              <option
+                th:each="s : ${#numbers.sequence(1,12)}"
+                th:value="${s}"
+                th:text="'Semester ' + ${s}"
+              ></option>
+            </select>
+            <button type="button" onclick="resetFilter()" class="filter-reset">
+              🔄 Reset Filter
+            </button>
+          </div>
+        </div>
+
+        <div class="matakuliah-list" id="matakuliahList">
+          <div
+            class="mk-card"
+            th:each="mk : ${matakuliahList}"
+            th:attr="data-jenis=${mk.jenisMk},data-sks=${mk.sks},data-semester=${mk.defaultSemester},data-nama=${mk.namaMk},data-kode=${mk.kodeMk}"
+          >
+            <span class="mk-title" th:text="${mk.namaMk}"></span>
+            <span
+              class="mk-badge"
+              th:text="${mk.jenisMk?.toString()?.toLowerCase()}"
+            ></span>
+            <span class="mk-info">
+              <div
+                style="font-size: 12px; color: #64748b; font-weight: 500"
+                th:text="${mk.kodeMk}"
+              ></div>
+              ⚖️ <span th:text="${mk.sks}"></span> SKS<br />
+              📅 Semester <span th:text="${mk.defaultSemester}"></span>
+            </span>
+            <button
+              type="button"
+              class="btn-add"
+              th:attr="onclick='showAddPopup(' + ${mk.id} + ')'"
+              style="position: absolute; right: 16px; bottom: 16px; margin: 0"
+            >
+              ➕ Add
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
-</body>
+
+    <!-- Popup Tambah Mata Kuliah ke Semester -->
+    <div class="add-popup-bg" id="addPopupBg">
+      <div class="add-popup">
+        <h4>Pilih Semester/Rencana Studi</h4>
+        <form
+          id="addMatkulForm"
+          th:action="@{/admin/rencana-studi/add-matkul}"
+          method="post"
+        >
+          <input type="hidden" name="mataKuliahId" id="popupMataKuliahId" />
+          <select
+            name="rencanaStudiId"
+            id="popupRencanaStudiId"
+            required
+            style="width: 100%"
+          >
+            <option value="">Pilih Semester</option>
+            <option
+              th:each="rs : ${rencanaStudiList}"
+              th:value="${rs.id}"
+              th:text="${rs.semester}"
+            ></option>
+          </select>
+          <div style="margin-top: 18px">
+            <button type="submit">Tambah</button>
+            <button type="button" class="cancel-btn" onclick="hideAddPopup()">
+              Batal
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script>
+      // Search functionality
+      function handleSearch() {
+        const searchInput = document.querySelector('input[name="search"]');
+        const searchValue = searchInput.value.toLowerCase();
+        const userButtons = document.querySelectorAll(".user-btn");
+
+        userButtons.forEach(function (button) {
+          const userName = button.textContent.toLowerCase();
+          if (userName.includes(searchValue)) {
+            button.style.display = "block";
+          } else {
+            button.style.display = "none";
+          }
+        });
+      }
+
+      // Popup functionality
+      function showAddPopup(mkId) {
+        document.getElementById("addPopupBg").classList.add("active");
+        document.getElementById("popupMataKuliahId").value = mkId;
+      }
+      function hideAddPopup() {
+        document.getElementById("addPopupBg").classList.remove("active");
+        document.getElementById("popupMataKuliahId").value = "";
+      }
+
+      // Filter functionality
+      document.addEventListener("DOMContentLoaded", function () {
+        const jenis = document.getElementById("filterJenis");
+        const sks = document.getElementById("filterSks");
+        const semester = document.getElementById("filterSemester");
+        const mkSearchInput = document.getElementById("mkSearchInput");
+        const list = document.getElementById("matakuliahList");
+
+        function filter() {
+          const jenisVal = jenis.value;
+          const sksVal = sks.value;
+          const semesterVal = semester.value;
+          const searchTerm = mkSearchInput.value.toLowerCase();
+
+          Array.from(list.children).forEach(function (card) {
+            let show = true;
+            if (jenisVal && card.getAttribute("data-jenis") !== jenisVal)
+              show = false;
+            if (sksVal && card.getAttribute("data-sks") !== sksVal)
+              show = false;
+            if (
+              semesterVal &&
+              card.getAttribute("data-semester") !== semesterVal
+            )
+              show = false;
+
+            // Search filter
+            if (searchTerm) {
+              const nama = (card.getAttribute("data-nama") || "").toLowerCase();
+              const kode = (card.getAttribute("data-kode") || "").toLowerCase();
+              if (!nama.includes(searchTerm) && !kode.includes(searchTerm)) {
+                show = false;
+              }
+            }
+
+            card.style.display = show ? "" : "none";
+          });
+        }
+
+        jenis.addEventListener("change", filter);
+        sks.addEventListener("change", filter);
+        semester.addEventListener("change", filter);
+        mkSearchInput.addEventListener("input", filter);
+
+        window.resetFilter = function () {
+          jenis.value = "";
+          sks.value = "";
+          semester.value = "";
+          mkSearchInput.value = "";
+          filter();
+        };
+
+        // Close popup on background click
+        var bg = document.getElementById("addPopupBg");
+        if (bg) {
+          bg.addEventListener("click", function (e) {
+            if (e.target === bg) hideAddPopup();
+          });
+        }
+
+        // Run filter on initial load
+        filter();
+      });
+    </script>
+  </body>
 </html>

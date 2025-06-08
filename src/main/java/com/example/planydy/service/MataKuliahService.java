@@ -4,27 +4,27 @@ import com.example.planydy.model.MataKuliah;
 import com.example.planydy.repository.MataKuliahRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 
 @Service
 public class MataKuliahService {
-
     @Autowired
-    private MataKuliahRepository mataKuliahRepository;
+    private MataKuliahRepository mataKuliahRepo;
 
     public List<MataKuliah> findAll() {
-        return mataKuliahRepository.findAll();
+        return mataKuliahRepo.findAll();
     }
 
     public MataKuliah findById(Long id) {
-        return mataKuliahRepository.findById(id).orElse(null);
+        return mataKuliahRepo.findById(id).orElse(null);
     }
 
-    public MataKuliah save(MataKuliah mk) {
-        return mataKuliahRepository.save(mk);
+    public void save(MataKuliah mk) {
+        mataKuliahRepo.save(mk);
     }
 
     public void deleteById(Long id) {
-        mataKuliahRepository.deleteById(id);
+        mataKuliahRepo.deleteById(id);
     }
 }

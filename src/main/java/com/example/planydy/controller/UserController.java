@@ -48,7 +48,9 @@ public class UserController {
     }
 
     @GetMapping("/home")
-    public String home(@RequestParam(value = "semesterId", required = false) Long semesterId, Model model) {
+    public String home(@RequestParam(value = "semesterId", required = false) Long semesterId,
+                       @RequestParam(value = "deleteSemesterMsg", required = false) String deleteSemesterMsg,
+                       Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = auth.getName();
         Optional<User> userOpt = userRepo.findByUsername(username);
@@ -170,6 +172,10 @@ public class UserController {
         }
         model.addAttribute("ipkTotal", ipkTotal);
 
+        if (deleteSemesterMsg != null) {
+            model.addAttribute("deleteSemesterMsg", deleteSemesterMsg);
+        }
+
         return "user/home";
     }
 
@@ -244,7 +250,7 @@ public class UserController {
     }
 
     @PostMapping("/semester/delete/{id}")
-    public String deleteSemester(@PathVariable Long id) {
+    public String deleteSemester(@PathVariable Long id, Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = auth.getName();
         Optional<User> userOpt = userRepo.findByUsername(username);
@@ -254,8 +260,11 @@ public class UserController {
         Optional<RencanaStudi> rsOpt = rencanaStudiRepo.findById(id);
         if (rsOpt.isPresent() && rsOpt.get().getUser().getId().equals(user.getId())) {
             rencanaStudiRepo.deleteById(id);
+            // Redirect dengan notifikasi
+            return "redirect:/user/home?deleteSemesterMsg=Semester+berhasil+dihapus";
         }
-        return "redirect:/user/home";
+        // Redirect dengan notifikasi gagal
+        return "redirect:/user/home?deleteSemesterMsg=Gagal+hapus+semester";
     }
 
     @PostMapping("/ambilmatkul/add")

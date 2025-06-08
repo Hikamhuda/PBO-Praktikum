@@ -8,23 +8,30 @@
         body {
             margin: 0;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #f8fafc;
             min-height: 100vh;
         }
         
         .container {
             display: flex;
-            height: calc(100vh - 70px);
+            height: 100vh;
+            padding-top: 70px;
             background: #f8fafc;
         }
         
         .sidebar {
+            position: fixed;
+            top: 70px;
+            left: 0;
             width: 280px;
+            height: calc(100vh - 70px);
             background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
             border-right: 1px solid #e2e8f0;
             padding: 24px 20px;
             box-sizing: border-box;
             box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            overflow-y: auto;
+            z-index: 100;
         }
         
         .sidebar h2 {
@@ -99,9 +106,12 @@
         
         .main-content {
             flex: 1;
+            margin-left: 280px;
+            margin-right: 340px;
             padding: 24px;
             background: #f8fafc;
             overflow-y: auto;
+            height: calc(100vh - 70px);
         }
         
         .panel {
@@ -154,12 +164,18 @@
         }
         
         .matakuliah-panel {
+            position: fixed;
+            top: 70px;
+            right: 0;
             width: 340px;
+            height: calc(100vh - 70px);
             background: #ffffff;
             border-left: 1px solid #e2e8f0;
             padding: 24px 20px;
             box-sizing: border-box;
             box-shadow: -2px 0 10px rgba(0,0,0,0.05);
+            overflow-y: auto;
+            z-index: 100;
         }
         
         .matakuliah-panel h3 {
@@ -243,6 +259,7 @@
             margin-bottom: 12px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.05);
             transition: all 0.3s ease;
+            position: relative;
         }
         
         .mk-card:hover {
@@ -313,6 +330,9 @@
         }
         
         .topbar {
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
             height: 70px;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -322,6 +342,7 @@
             align-items: center;
             justify-content: space-between;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            z-index: 1000;
         }
         
         .topbar .logo {
@@ -473,7 +494,7 @@
                                 <span th:text="${semesterSksMap[s.id] != null ? semesterSksMap[s.id] : 0}">0</span> SKS
                             </span>
                         </button>
-                        <form th:action="@{/user/semester/delete/{id}(id=${s.id})}" method="post" style="margin:0;">
+                        <form th:action="@{/user/semester/delete/{id}(id=${s.id})}" method="post" style="margin:0;" onsubmit="return confirmDeleteSemester(this);">
                             <button type="submit" title="Hapus Semester" style="background:#ff4d4f;color:#fff;border:none;border-radius:6px;padding:4px 8px;cursor:pointer;">&#10005;</button>
                         </form>
                     </div>
@@ -561,6 +582,19 @@
                 <!-- <a th:href="@{/user/matakuliah}" style="background:linear-gradient(135deg, #667eea, #764ba2);color:#fff;border:none;border-radius:8px;padding:8px 16px;cursor:pointer;text-decoration:none;display:inline-block;font-weight:600;font-size:12px;">+ Tambah</a> -->
             </div>
             
+            <!-- Search Bar -->
+            <div style="position: relative; margin-bottom: 16px;">
+                <span style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #94a3b8; font-size: 14px; pointer-events: none; z-index: 1;">🔍</span>
+                <input 
+                    type="text" 
+                    id="mkSearchInput" 
+                    placeholder="Cari mata kuliah..."
+                    style="width: 100%; padding: 8px 12px 8px 36px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 14px; transition: border-color 0.3s ease; box-sizing: border-box;"
+                    onfocus="this.style.borderColor='#667eea'; this.style.boxShadow='0 0 0 3px rgba(102, 126, 234, 0.1)'"
+                    onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none'"
+                />
+            </div>
+            
             <div class="filter-section">
                 <div class="filter-row">
                     <select id="filterJenis">
@@ -587,24 +621,23 @@
                 <div class="mk-card"
                     th:each="mk : ${matakuliahList}"
                     th:classappend="${selectedSemesterId != null and #lists.contains(ambilMatkulMkIds, mk.id)} ? 'taken' : ''"
-                    th:attr="data-jenis=${mk.jenisMk},data-sks=${mk.sks},data-semester=${mk.defaultSemester}"
-                    style="position:relative;">
+                    th:attr="data-jenis=${mk.jenisMk},data-sks=${mk.sks},data-semester=${mk.defaultSemester},data-nama=${mk.namaMk},data-kode=${mk.kodeMk}">
                     <span class="mk-title" th:text="${mk.namaMk}"></span>
                     <span class="mk-badge" th:text="${mk.jenisMk?.toString()?.toLowerCase()}"></span>
+                    <div style="font-size: 12px; color: #64748b; font-weight: 500;" th:text="${mk.kodeMk}"></div>
                     <span class="mk-info">
-                       📝 <span th:text="${mk.kodeMk}"></span><br>
                        ⚖️ <span th:text="${mk.sks}"></span> SKS<br>
                        📅 Semester <span th:text="${mk.defaultSemester}"></span>
                     </span>
                     <form th:if="${selectedSemesterId != null and !#lists.contains(ambilMatkulMkIds, mk.id)}"
-                        th:action="@{/user/ambilmatkul/add}" method="post" style="margin-top:8px;">
+                        th:action="@{/user/ambilmatkul/add}" method="post" style="position: absolute; right: 16px; bottom: 16px; margin: 0;">
                        <input type="hidden" name="rencanaStudiId" th:value="${selectedSemesterId}" />
                        <input type="hidden" name="mataKuliahId" th:value="${mk.id}" />
                        <button type="submit" class="btn-add">➕ Add</button>
                     </form>
                     <span th:if="${selectedSemesterId != null and #lists.contains(ambilMatkulMkIds, mk.id)}"
                         class="status-taken"
-                        style="position:absolute; right:16px; bottom:16px; margin:0;">✅ Diambil</span>
+                        style="position: absolute; right: 16px; bottom: 16px; margin: 0;">✅ Diambil</span>
                 </div>
             </div>
         </div>
@@ -616,31 +649,54 @@
             const jenis = document.getElementById('filterJenis');
             const sks = document.getElementById('filterSks');
             const semester = document.getElementById('filterSemester');
+            const mkSearchInput = document.getElementById('mkSearchInput');
             const list = document.getElementById('matakuliahList');
+            
             function filter() {
                 const jenisVal = jenis.value;
                 const sksVal = sks.value;
                 const semesterVal = semester.value;
+                const searchTerm = mkSearchInput.value.toLowerCase();
+                
                 Array.from(list.children).forEach(function(card) {
                     let show = true;
                     if (jenisVal && card.getAttribute('data-jenis') !== jenisVal) show = false;
                     if (sksVal && card.getAttribute('data-sks') !== sksVal) show = false;
                     if (semesterVal && card.getAttribute('data-semester') !== semesterVal) show = false;
+                    
+                    // Search filter
+                    if (searchTerm) {
+                        const nama = (card.getAttribute('data-nama') || '').toLowerCase();
+                        const kode = (card.getAttribute('data-kode') || '').toLowerCase();
+                        if (!nama.includes(searchTerm) && !kode.includes(searchTerm)) {
+                            show = false;
+                        }
+                    }
+                    
                     card.style.display = show ? '' : 'none';
                 });
             }
+            
             jenis.addEventListener('change', filter);
             sks.addEventListener('change', filter);
             semester.addEventListener('change', filter);
+            mkSearchInput.addEventListener('input', filter);
+            
             window.resetFilter = function() {
                 jenis.value = '';
                 sks.value = '';
                 semester.value = '';
+                mkSearchInput.value = '';
                 filter();
             }
+            
             // Jalankan filter saat halaman pertama kali dimuat (agar konsisten)
             filter();
         });
+        
+        function confirmDeleteSemester(form) {
+            return confirm('Yakin ingin menghapus semester ini beserta seluruh mata kuliah yang diambil pada semester tersebut?');
+        }
     </script>
 </body>
 </html>

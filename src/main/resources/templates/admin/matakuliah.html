@@ -5,203 +5,629 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manajemen Mata Kuliah</title>
     <style>
-        /* ...copy all style from admin/home.html... */
         body {
             margin: 0;
-            font-family: 'Segoe UI', Arial, sans-serif;
-            background: #f6f9ff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
         }
+        
         .container {
             display: flex;
-            height: 100vh;
+            height: calc(100vh - 70px);
+            background: #f8fafc;
         }
+        
         .sidebar {
-            width: 260px;
-            background: #fff;
-            border-right: 1px solid #e5eaf1;
-            padding: 24px 16px;
+            width: 320px;
+            background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+            border-right: 1px solid #e2e8f0;
+            padding: 24px 20px;
+            box-sizing: border-box;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+        }
+        
+        .sidebar h2 {
+            color: #2d3748;
+            margin-top: 0;
+            margin-bottom: 24px;
+            font-size: 20px;
+            font-weight: 700;
+            text-align: center;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .search-container {
+            position: relative;
+            margin-bottom: 16px;
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+            font-size: 14px;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 10px 12px 10px 36px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+            background: #f8fafc;
             box-sizing: border-box;
         }
-        .sidebar h2 {
-            color: #3b3bff;
-            margin-top: 0;
-            margin-bottom: 32px;
-            font-size: 28px;
-            font-weight: 700;
-            letter-spacing: 1px;
+        
+        .search-input:focus {
+            border-color: #667eea;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
         }
-        .main-content {
-            flex: 1;
-            padding: 36px 32px;
-            background: #f6f9ff;
+        
+        .filter-section {
+            background: #f8fafc;
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 16px;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .filter-title {
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #2d3748;
+            font-size: 14px;
+        }
+        
+        .filter-row {
             display: flex;
             flex-direction: column;
+            gap: 10px;
         }
+        
+        .filter-row select {
+            padding: 8px 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 13px;
+            transition: border-color 0.3s ease;
+            background: white;
+        }
+        
+        .filter-row select:focus {
+            border-color: #667eea;
+            outline: none;
+        }
+        
+        .filter-reset {
+            padding: 8px 16px;
+            border-radius: 8px;
+            background: #f1f5f9;
+            border: 1px solid #cbd5e1;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 500;
+            color: #475569;
+            transition: all 0.2s ease;
+            margin-top: 8px;
+            width: 100%;
+        }
+        
+        .filter-reset:hover {
+            background: #e2e8f0;
+            border-color: #94a3b8;
+        }
+        
+        .main-content {
+            flex: 1;
+            padding: 24px;
+            background: #f8fafc;
+            overflow-y: auto;
+        }
+        
         .panel {
-            background: #fff;
+            background: #ffffff;
             border-radius: 16px;
-            box-shadow: 0 2px 8px #e5eaf1;
-            padding: 32px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            padding: 24px;
             margin-bottom: 24px;
+            border: 1px solid #e2e8f0;
         }
-        .panel h3 {
-            margin-top: 0;
-            color: #3b3bff;
-            font-size: 22px;
-        }
+        
         .topbar {
             width: 100%;
-            background: #fff;
-            border-bottom: 1px solid #e5eaf1;
-            padding: 16px 32px;
+            height: 70px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 0 32px;
             box-sizing: border-box;
             display: flex;
             align-items: center;
             justify-content: space-between;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
+        
         .topbar .logo {
-            font-size: 24px;
-            font-weight: 700;
-            color: #3b3bff;
+            font-size: 28px;
+            font-weight: 800;
+            color: #ffffff;
             letter-spacing: 1px;
         }
-        .dropdown-content {
-            display: none;
-            position: absolute;
-            right: 0;
-            top: 110%;
-            background: #fff;
-            border: 1px solid #e5eaf1;
+        
+        .topbar .back-btn {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: white;
             border-radius: 8px;
-            box-shadow: 0 2px 8px #e5eaf1;
-            min-width: 140px;
-            z-index: 10;
+            padding: 8px 16px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-weight: 600;
         }
-        .dropdown-content button {
-            width: 100%;
-            background: none;
+        
+        .topbar .back-btn:hover {
+            background: rgba(255,255,255,0.2);
+        }
+        
+        h1 {
+            color: #2d3748;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 24px;
+            margin-top: 0;
+        }
+        
+        .alert {
+            padding: 12px 18px;
+            border-radius: 8px;
+            margin-bottom: 18px;
+            font-weight: 500;
+        }
+        
+        .alert-error {
+            background: #ffeaea;
+            color: #d32f2f;
+            border-left: 4px solid #d32f2f;
+        }
+        
+        .alert-success {
+            background: #e8f5e8;
+            color: #2e7d32;
+            border-left: 4px solid #2e7d32;
+        }
+        
+        .form-card {
+            background: #fff;
+            border-radius: 14px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            padding: 24px;
+            margin-bottom: 24px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 24px;
+            align-items: flex-end;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 0;
+            flex: 1 1 220px;
+            min-width: 220px;
+        }
+        
+        .form-group label {
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: #2d3748;
+        }
+        
+        .form-group input,
+        .form-group select {
+            padding: 10px 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+            background: #f8fafc;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .form-actions {
+            display: flex;
+            align-items: flex-end;
+            height: 100%;
+            gap: 12px;
+        }
+        
+        .form-actions button {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: #fff;
             border: none;
-            padding: 10px 18px;
-            text-align: left;
-            color: #ff4d4f;
+            border-radius: 8px;
+            padding: 12px 24px;
+            font-size: 14px;
+            font-weight: 600;
             cursor: pointer;
+            transition: all 0.2s ease;
         }
-        .sidebar a.active {
-            background: #e5eaf1;
+        
+        .form-actions button:hover {
+            background: linear-gradient(135deg, #5a6fd8, #6b42a1);
+            transform: translateY(-1px);
+        }
+        
+        .form-actions .cancel-btn {
+            background: #f1f5f9;
+            color: #64748b;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .section-title {
+            color: #2d3748;
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+        
+        .matkul-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 20px;
+            max-height: 70vh;
+            overflow-y: auto;
+            padding-right: 8px;
+        }
+        
+        .matkul-list::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .matkul-list::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 3px;
+        }
+        
+        .matkul-list::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 3px;
+        }
+        
+        .matkul-card {
+            background: #fff;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.3s ease;
+            position: relative;
+            min-height: 180px;
+        }
+        
+        .matkul-card:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(102, 126, 234, 0.15);
+        }
+        
+        .matkul-card .badge {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: #fff;
             border-radius: 6px;
-            color: #2323b5 !important;
+            padding: 4px 12px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .matkul-card h3 {
+            margin: 0 0 12px 0;
+            font-size: 18px;
+            font-weight: 700;
+            color: #2d3748;
+            padding-right: 80px;
+            line-height: 1.3;
+        }
+        
+        .matkul-card .info {
+            font-size: 14px;
+            color: #4a5568;
+            margin-bottom: 6px;
+        }
+        
+        .matkul-card .prasyarat {
+            background: #f8fafc;
+            color: #64748b;
+            font-size: 12px;
+            border-radius: 6px;
+            padding: 6px 10px;
+            margin-top: 12px;
+            display: inline-block;
+        }
+        
+        .matkul-card .actions {
+            position: absolute;
+            bottom: 16px;
+            right: 16px;
+            display: flex;
+            gap: 6px;
+        }
+        
+        .matkul-card .actions a {
+            border: none;
+            border-radius: 6px;
+            padding: 6px 12px;
+            font-size: 12px;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 600;
+        }
+        
+        .matkul-card .actions .edit {
+            background: #fbbf24;
+            color: #92400e;
+        }
+        
+        .matkul-card .actions .edit:hover {
+            background: #f59e0b;
+            color: white;
+        }
+        
+        .matkul-card .actions .delete {
+            background: #ef4444;
+            color: #fff;
+        }
+        
+        .matkul-card .actions .delete:hover {
+            background: #dc2626;
+        }
+        
+        .no-results {
+            text-align: center;
+            padding: 40px;
+            color: #64748b;
+            grid-column: 1 / -1;
+        }
+        
+        .no-results div {
+            font-size: 48px;
+            margin-bottom: 16px;
         }
     </style>
 </head>
 <body>
     <div class="topbar">
         <span class="logo">Planydy</span>
-        <div style="display:flex;align-items:center;gap:18px;">
-            <div class="relative group" style="position:relative;">
-                <button style="background:none;border:none;cursor:pointer;display:flex;align-items:center;gap:8px;">
-                    <span style="font-weight:600;" th:text="${#authentication.principal.username}">admin</span>
-                    <span style="color:#888;">Manajemen Mata Kuliah</span>
-                    <svg style="width:16px;height:16px;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path d="M19 9l-7 7-7-7"/>
-                    </svg>
-                </button>
-                <div class="dropdown-content group-hover:block" style="display:none;position:absolute;right:0;top:110%;background:#fff;border:1px solid #e5eaf1;border-radius:8px;box-shadow:0 2px 8px #e5eaf1;min-width:140px;z-index:10;">
-                    <form th:action="@{/logout}" method="post" style="margin:0;">
-                        <button type="submit" style="width:100%;background:none;border:none;padding:10px 18px;text-align:left;color:#ff4d4f;cursor:pointer;">Logout</button>
-                    </form>
+        <a th:href="@{/admin/home}" class="back-btn">← Kembali ke Dashboard</a>
+    </div>
+    
+    <div class="container">
+        <!-- Sidebar with Search and Filters -->
+        <div class="sidebar">
+            <h2>Pencarian & Filter</h2>
+            
+            <!-- Search Bar -->
+            <div class="search-container">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="searchInput" class="search-input" placeholder="Cari mata kuliah..." />
+            </div>
+            
+            <!-- Filters -->
+            <div class="filter-section">
+                <div class="filter-title">Filter Mata Kuliah</div>
+                <div class="filter-row">
+                    <select id="filterJenis">
+                        <option value="">📋 Semua Jenis</option>
+                        <option value="WAJIB">📌 Wajib</option>
+                        <option value="PILIHAN">⭐ Pilihan</option>
+                    </select>
+                    <select id="filterSks">
+                        <option value="">⚖️ Semua SKS</option>
+                        <option value="1">1 SKS</option>
+                        <option value="2">2 SKS</option>
+                        <option value="3">3 SKS</option>
+                        <option value="4">4 SKS</option>
+                    </select>
+                    <select id="filterSemester">
+                        <option value="">📅 Semua Semester</option>
+                        <option value="1">Semester 1</option>
+                        <option value="2">Semester 2</option>
+                        <option value="3">Semester 3</option>
+                        <option value="4">Semester 4</option>
+                        <option value="5">Semester 5</option>
+                        <option value="6">Semester 6</option>
+                        <option value="7">Semester 7</option>
+                        <option value="8">Semester 8</option>
+                    </select>
+                    <button type="button" onclick="resetFilter()" class="filter-reset">
+                        🔄 Reset Filter
+                    </button>
                 </div>
             </div>
         </div>
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                var btn = document.querySelector('.topbar .group > button');
-                var dropdown = document.querySelector('.topbar .dropdown-content');
-                if(btn && dropdown) {
-                    btn.addEventListener('click', function(e){
-                        e.stopPropagation();
-                        dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
-                    });
-                    document.addEventListener('click', function(){
-                        dropdown.style.display = 'none';
-                    });
-                }
-            });
-        </script>
-    </div>
-    <div class="container">
-        <div class="sidebar">
-            <h2>Admin Menu</h2>
-            <ul style="list-style:none;padding:0;">
-                <li>
-                    <a href="/admin/home"
-                       style="text-decoration:none;color:#3b3bff;font-weight:500;display:block;padding:8px 0;">
-                        Dashboard
-                    </a>
-                </li>
-                <li>
-                    <a href="/admin/matakuliah"
-                       class="active"
-                       style="text-decoration:none;color:#3b3bff;font-weight:500;display:block;padding:8px 0;">
-                        Manajemen Mata Kuliah
-                    </a>
-                </li>
-                <li>
-                    <a href="/admin/rencana-studi"
-                       style="text-decoration:none;color:#3b3bff;font-weight:500;display:block;padding:8px 0;">
-                        Rencana Studi
-                    </a>
-                </li>
-            </ul>
-        </div>
+        
+        <!-- Main Content -->
         <div class="main-content">
-            <section>
-                <div class="panel">
-                    <h3>Manajemen Mata Kuliah</h3>
-                    <div th:if="${error != null}" style="background:#ffeaea;color:#d32f2f;padding:12px 18px;border-radius:8px;margin-bottom:18px;">
-                        <span th:text="${error}">Tidak bisa hapus karena masih digunakan di data lain</span>
+            <div class="panel">
+                <h1>Manajemen Mata Kuliah</h1>
+                
+                <!-- Error/Success Messages -->
+                <div th:if="${param.error}" class="alert alert-error">
+                    <span th:text="${param.error}">Error message</span>
+                </div>
+                <div th:if="${param.success}" class="alert alert-success">
+                    <span th:text="${param.success}">Success message</span>
+                </div>
+                
+                <!-- Form -->
+                <form class="form-card" th:action="@{/admin/matakuliah}" method="post" th:object="${matakuliah}">
+                    <input type="hidden" th:field="*{id}" />
+                    <div class="form-group">
+                        <label for="kodeMk">Kode Mata Kuliah*</label>
+                        <input type="text" id="kodeMk" name="kodeMk" th:field="*{kodeMk}" placeholder="MK001" required>
                     </div>
-                    <form th:action="@{/admin/matakuliah}" method="post" style="margin-bottom:24px;display:flex;gap:12px;align-items:center;" th:object="${matakuliah}">
-                        <input type="hidden" th:field="*{id}" />
-                        <input type="text" th:field="*{namaMk}" placeholder="Nama Mata Kuliah" required style="padding:6px 10px;border-radius:6px;border:1px solid #d0d7e2;">
-                        <input type="text" th:field="*{kodeMk}" placeholder="Kode" required style="padding:6px 10px;border-radius:6px;border:1px solid #d0d7e2;">
-                        <input type="number" th:field="*{sks}" placeholder="SKS" min="1" required style="width:60px;padding:6px 10px;border-radius:6px;border:1px solid #d0d7e2;">
-                        <select th:field="*{jenisMk}" required style="padding:6px 10px;border-radius:6px;border:1px solid #d0d7e2;">
-                            <option value="">Jenis</option>
+                    <div class="form-group">
+                        <label for="namaMk">Nama Mata Kuliah*</label>
+                        <input type="text" id="namaMk" name="namaMk" th:field="*{namaMk}" placeholder="Pemrograman Web Lanjut" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="sks">SKS*</label>
+                        <select id="sks" name="sks" th:field="*{sks}" required>
+                            <option value="">Pilih SKS</option>
+                            <option value="1">1 SKS</option>
+                            <option value="2">2 SKS</option>
+                            <option value="3">3 SKS</option>
+                            <option value="4">4 SKS</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="jenisMk">Jenis*</label>
+                        <select id="jenisMk" name="jenisMk" th:field="*{jenisMk}" required>
+                            <option value="">Pilih Jenis</option>
                             <option value="WAJIB">Wajib</option>
                             <option value="PILIHAN">Pilihan</option>
                         </select>
-                        <input type="number" th:field="*{defaultSemester}" placeholder="Semester" min="1" required style="width:80px;padding:6px 10px;border-radius:6px;border:1px solid #d0d7e2;">
-                        <button type="submit" style="background:#3b3bff;color:#fff;border:none;border-radius:6px;padding:8px 18px;cursor:pointer;" th:text="${matakuliah.id != null} ? 'Simpan' : 'Tambah'">Tambah</button>
-                        <a th:if="${matakuliah.id != null}" th:href="@{/admin/matakuliah}" style="background:#888;color:#fff;border:none;border-radius:6px;padding:8px 18px;cursor:pointer;text-decoration:none;">Batal</a>
-                    </form>
-                    <table style="width:100%;border-collapse:collapse;">
-                        <thead>
-                            <tr style="background:#f6f9ff;">
-                                <th style="padding:8px;border-bottom:1px solid #e5eaf1;">Nama</th>
-                                <th style="padding:8px;border-bottom:1px solid #e5eaf1;">Kode</th>
-                                <th style="padding:8px;border-bottom:1px solid #e5eaf1;">SKS</th>
-                                <th style="padding:8px;border-bottom:1px solid #e5eaf1;">Jenis</th>
-                                <th style="padding:8px;border-bottom:1px solid #e5eaf1;">Semester</th>
-                                <th style="padding:8px;border-bottom:1px solid #e5eaf1;">Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr th:each="mk : ${matakuliahList}">
-                                <td th:text="${mk.namaMk}">Nama</td>
-                                <td th:text="${mk.kodeMk}">Kode</td>
-                                <td th:text="${mk.sks}">SKS</td>
-                                <td th:text="${mk.jenisMk}">Jenis</td>
-                                <td th:text="${mk.defaultSemester}">Semester</td>
-                                <td>
-                                    <a th:href="@{/admin/matakuliah/edit/{id}(id=${mk.id})}" style="background:#ffc107;color:#fff;padding:7px 14px;border-radius:6px;text-decoration:none;margin-right:4px;">Edit</a>
-                                    <a th:href="@{/admin/matakuliah/delete/{id}(id=${mk.id})}" style="background:#ff6b6b;color:#fff;padding:7px 14px;border-radius:6px;text-decoration:none;" onclick="return confirm('Yakin hapus?')">&#128465;</a>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    </div>
+                    <div class="form-group">
+                        <label for="prasyaratMkIds">Prasyarat (Kode MK)</label>
+                        <input type="text" id="prasyaratMkIds" name="prasyaratMkIds" th:field="*{prasyaratMkIds}" placeholder="MK001,MK002 (pisahkan dengan koma)">
+                    </div>
+                    <div class="form-group">
+                        <label for="defaultSemester">Semester Default*</label>
+                        <select id="defaultSemester" name="defaultSemester" th:field="*{defaultSemester}" required>
+                            <option value="">Pilih Semester</option>
+                            <option value="1">Semester 1</option>
+                            <option value="2">Semester 2</option>
+                            <option value="3">Semester 3</option>
+                            <option value="4">Semester 4</option>
+                            <option value="5">Semester 5</option>
+                            <option value="6">Semester 6</option>
+                            <option value="7">Semester 7</option>
+                            <option value="8">Semester 8</option>
+                        </select>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" th:text="${matakuliah.id} != null ? 'Update' : 'Simpan'">Simpan</button>
+                        <a th:if="${matakuliah.id} != null" th:href="@{/admin/matakuliah}" class="cancel-btn">Batal</a>
+                    </div>
+                </form>
+                
+                <div class="section-title">Daftar Mata Kuliah</div>
+                <div class="matkul-list" id="matakuliahList">
+                    <div class="matkul-card" th:each="mk : ${matakuliahList}"
+                         th:attr="data-nama=${mk.namaMk}, data-kode=${mk.kodeMk}, data-jenis=${mk.jenisMk}, data-sks=${mk.sks}, data-semester=${mk.defaultSemester}">
+                        <span class="badge" th:text="${mk.jenisMk?.toString()?.toLowerCase()}">wajib</span>
+                        <h3 th:text="${mk.namaMk}">Nama Mata Kuliah</h3>
+                        <div class="info">📝 Kode: <span th:text="${mk.kodeMk}">MK001</span></div>
+                        <div class="info">⚖️ SKS: <span th:text="${mk.sks}">3</span></div>
+                        <div class="info">📅 Semester Default: <span th:text="${mk.defaultSemester}">1</span></div>
+                        <div class="prasyarat">Prasyarat: <span th:text="${mk.prasyaratMkIds != null and mk.prasyaratMkIds != '' ? mk.prasyaratMkIds : '-'}">-</span></div>
+                        <div class="actions">
+                            <a class="edit" th:href="@{/admin/matakuliah/edit/{id}(id=${mk.id})}">✏️ Edit</a>
+                            <a class="delete" th:href="@{/admin/matakuliah/delete/{id}(id=${mk.id})}" 
+                               onclick="return confirm('Yakin ingin menghapus mata kuliah ini? Mata kuliah yang sudah diambil mahasiswa tidak dapat dihapus.')">🗑️ Hapus</a>
+                        </div>
+                    </div>
+                    <div class="no-results" id="noResults" style="display: none;">
+                        <div>🔍</div>
+                        <h4>Tidak ada mata kuliah yang ditemukan</h4>
+                        <p>Coba ubah kata kunci pencarian atau filter yang dipilih</p>
+                    </div>
                 </div>
-            </section>
+            </div>
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('searchInput');
+            const filterJenis = document.getElementById('filterJenis');
+            const filterSks = document.getElementById('filterSks');
+            const filterSemester = document.getElementById('filterSemester');
+            const matakuliahList = document.getElementById('matakuliahList');
+            const noResults = document.getElementById('noResults');
+
+            function filterAndSearch() {
+                const searchTerm = searchInput.value.toLowerCase();
+                const jenisFilter = filterJenis.value;
+                const sksFilter = filterSks.value;
+                const semesterFilter = filterSemester.value;
+                
+                const cards = matakuliahList.querySelectorAll('.matkul-card');
+                let visibleCount = 0;
+
+                cards.forEach(card => {
+                    const nama = card.getAttribute('data-nama').toLowerCase();
+                    const kode = card.getAttribute('data-kode').toLowerCase();
+                    const jenis = card.getAttribute('data-jenis');
+                    const sks = card.getAttribute('data-sks');
+                    const semester = card.getAttribute('data-semester');
+
+                    // Search filter
+                    const matchesSearch = nama.includes(searchTerm) || kode.includes(searchTerm);
+                    
+                    // Other filters
+                    const matchesJenis = !jenisFilter || jenis === jenisFilter;
+                    const matchesSks = !sksFilter || sks === sksFilter;
+                    const matchesSemester = !semesterFilter || semester === semesterFilter;
+
+                    const shouldShow = matchesSearch && matchesJenis && matchesSks && matchesSemester;
+                    
+                    if (shouldShow) {
+                        card.style.display = 'block';
+                        visibleCount++;
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+
+                // Show/hide no results message
+                if (visibleCount === 0) {
+                    noResults.style.display = 'block';
+                } else {
+                    noResults.style.display = 'none';
+                }
+            }
+
+            // Event listeners
+            searchInput.addEventListener('input', filterAndSearch);
+            filterJenis.addEventListener('change', filterAndSearch);
+            filterSks.addEventListener('change', filterAndSearch);
+            filterSemester.addEventListener('change', filterAndSearch);
+
+            // Reset function
+            window.resetFilter = function() {
+                searchInput.value = '';
+                filterJenis.value = '';
+                filterSks.value = '';
+                filterSemester.value = '';
+                filterAndSearch();
+            };
+
+            // Initial filter
+            filterAndSearch();
+        });
+    </script>
 </body>
 </html>
