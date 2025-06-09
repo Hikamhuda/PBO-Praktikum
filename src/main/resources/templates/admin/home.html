@@ -738,6 +738,7 @@
                           th:action="@{/admin/ambilmatkul/delete/{id}(id=${am.id})}"
                           method="post"
                           style="display: inline"
+                          onsubmit="return confirmDelete(event, this)"
                         >
                           <input
                             type="hidden"
@@ -900,8 +901,10 @@
           id="addMatkulForm"
           th:action="@{/admin/rencana-studi/add-matkul}"
           method="post"
+          class="add-mk-form-admin"
         >
           <input type="hidden" name="mataKuliahId" id="popupMataKuliahId" />
+          <input type="hidden" name="userId" th:value="${selectedUser?.id}" />
           <select
             name="rencanaStudiId"
             id="popupRencanaStudiId"
@@ -926,6 +929,23 @@
     </div>
 
     <script>
+      // Confirmation dialog for delete
+      function confirmDelete(event, form) {
+        event.preventDefault();
+        
+        // Get mata kuliah name from the row
+        const row = form.closest('tr');
+        const matkulName = row.querySelector('td:first-child').textContent;
+        
+        const confirmed = confirm(`Apakah Anda yakin ingin menghapus mata kuliah "${matkulName}" dari rencana studi ini?`);
+        
+        if (confirmed) {
+          form.submit();
+        }
+        
+        return false;
+      }
+
       // Search functionality
       function handleSearch() {
         const searchInput = document.querySelector('input[name="search"]');
@@ -944,12 +964,19 @@
 
       // Popup functionality
       function showAddPopup(mkId) {
+        const selectedUser = document.querySelector('input[name="userId"]')?.value;
+        if (!selectedUser) {
+          showNotification('Pilih user terlebih dahulu', 'error');
+          return;
+        }
         document.getElementById("addPopupBg").classList.add("active");
         document.getElementById("popupMataKuliahId").value = mkId;
       }
+      
       function hideAddPopup() {
         document.getElementById("addPopupBg").classList.remove("active");
         document.getElementById("popupMataKuliahId").value = "";
+        document.getElementById("popupRencanaStudiId").value = "";
       }
 
       // Filter functionality
@@ -1003,6 +1030,127 @@
           mkSearchInput.value = "";
           filter();
         };
+
+        // Handle Add Mata Kuliah with AJAX for Admin
+        document.addEventListener('submit', function(e) {
+          if (e.target.classList.contains('add-mk-form-admin')) {
+            e.preventDefault();
+            
+            const form = e.target;
+            const submitButton = form.querySelector('button[type="submit"]');
+            const originalText = submitButton.innerHTML;
+            
+            // Disable button and show loading
+            submitButton.disabled = true;
+            submitButton.innerHTML = '⏳ Adding...';
+            
+            // Create FormData
+            const formData = new FormData(form);
+            
+            // Send AJAX request
+            fetch(form.action, {
+              method: 'POST',
+              body: formData,
+              headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+              }
+            })
+            .then(response => {
+              if (response.ok) {
+                // Hide popup
+                hideAddPopup();
+                
+                // Show success notification
+                showNotification('Mata kuliah berhasil ditambahkan!', 'success');
+                
+                // Refresh the main content panel
+                refreshMainContentAdmin();
+              } else {
+                throw new Error('Failed to add course');
+              }
+            })
+            .catch(error => {
+              console.error('Error:', error);
+              showNotification('Gagal menambahkan mata kuliah', 'error');
+              
+              // Re-enable button
+              submitButton.disabled = false;
+              submitButton.innerHTML = originalText;
+            });
+          }
+        });
+
+        // Function to refresh main content panel for admin
+        function refreshMainContentAdmin() {
+          const urlParams = new URLSearchParams(window.location.search);
+          const userId = urlParams.get('userId');
+          
+          if (userId) {
+            // Fetch current page content
+            fetch(window.location.href, {
+              method: 'GET',
+              headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+              }
+            })
+            .then(response => response.text())
+            .then(html => {
+              // Parse the response to extract the main content
+              const parser = new DOMParser();
+              const doc = parser.parseFromString(html, 'text/html');
+              
+              // Update main content panel
+              const newMainContent = doc.querySelector('.main-content .panel');
+              const currentMainContent = document.querySelector('.main-content .panel');
+              if (newMainContent && currentMainContent) {
+                currentMainContent.innerHTML = newMainContent.innerHTML;
+              }
+              
+              console.log('Admin main content refreshed successfully');
+            })
+            .catch(error => {
+              console.error('Error refreshing admin content:', error);
+              showNotification('Gagal memperbarui konten', 'error');
+            });
+          }
+        }
+
+        // Notification function
+        function showNotification(message, type) {
+          const notification = document.createElement('div');
+          notification.innerHTML = message;
+          notification.style.cssText = `
+            position: fixed;
+            top: 90px;
+            right: 20px;
+            background: ${type === 'success' ? 'linear-gradient(135deg, #48bb78, #38a169)' : '#ef4444'};
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            z-index: 9999;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+          `;
+          
+          document.body.appendChild(notification);
+          
+          // Animate in
+          setTimeout(() => {
+            notification.style.transform = 'translateX(0)';
+          }, 100);
+          
+          // Remove after 3 seconds
+          setTimeout(() => {
+            notification.style.transform = 'translateX(100%)';
+            setTimeout(() => {
+              if (notification.parentNode) {
+                notification.parentNode.removeChild(notification);
+              }
+            }, 300);
+          }, 3000);
+        }
 
         // Close popup on background click
         var bg = document.getElementById("addPopupBg");

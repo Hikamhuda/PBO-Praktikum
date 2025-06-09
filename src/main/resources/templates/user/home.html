@@ -630,7 +630,10 @@
                        📅 Semester <span th:text="${mk.defaultSemester}"></span>
                     </span>
                     <form th:if="${selectedSemesterId != null and !#lists.contains(ambilMatkulMkIds, mk.id)}"
-                        th:action="@{/user/ambilmatkul/add}" method="post" style="position: absolute; right: 16px; bottom: 16px; margin: 0;">
+                        th:action="@{/user/ambilmatkul/add}" method="post" 
+                        class="add-mk-form"
+                        style="position: absolute; right: 16px; bottom: 16px; margin: 0;"
+                        th:attr="data-mk-id=${mk.id},data-mk-name=${mk.namaMk}">
                        <input type="hidden" name="rencanaStudiId" th:value="${selectedSemesterId}" />
                        <input type="hidden" name="mataKuliahId" th:value="${mk.id}" />
                        <button type="submit" class="btn-add">➕ Add</button>
@@ -688,6 +691,172 @@
                 semester.value = '';
                 mkSearchInput.value = '';
                 filter();
+            }
+            
+            // Handle Add Mata Kuliah with AJAX
+            document.addEventListener('submit', function(e) {
+                if (e.target.classList.contains('add-mk-form')) {
+                    e.preventDefault();
+                    
+                    const form = e.target;
+                    const button = form.querySelector('.btn-add');
+                    const originalText = button.innerHTML;
+                    
+                    // Disable button and show loading
+                    button.disabled = true;
+                    button.innerHTML = '⏳ Adding...';
+                    
+                    // Create FormData
+                    const formData = new FormData(form);
+                    
+                    // Send AJAX request
+                    fetch(form.action, {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            // Update UI - change button to "Diambil" status
+                            const mkCard = form.closest('.mk-card');
+                            mkCard.classList.add('taken');
+                            
+                            // Replace form with "Diambil" status
+                            form.outerHTML = '<span class="status-taken" style="position: absolute; right: 16px; bottom: 16px; margin: 0;">✅ Diambil</span>';
+                            
+                            // Show success notification
+                            showNotification('Mata kuliah berhasil ditambahkan!', 'success');
+                            
+                            // Refresh the main content panel
+                            refreshMainContent();
+                        } else {
+                            throw new Error('Failed to add course');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        showNotification('Gagal menambahkan mata kuliah', 'error');
+                        
+                        // Re-enable button
+                        button.disabled = false;
+                        button.innerHTML = originalText;
+                    });
+                }
+            });
+            
+            // Function to refresh main content panel
+            function refreshMainContent() {
+                const urlParams = new URLSearchParams(window.location.search);
+                const semesterId = urlParams.get('semesterId');
+                
+                if (semesterId) {
+                    // Fetch current page content
+                    fetch(window.location.href, {
+                        method: 'GET',
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    })
+                    .then(response => response.text())
+                    .then(html => {
+                        // Parse the response to extract the main content
+                        const parser = new DOMParser();
+                        const doc = parser.parseFromString(html, 'text/html');
+                        
+                        // Update stats section
+                        const newStatsRow = doc.querySelector('.stats-row');
+                        const currentStatsRow = document.querySelector('.stats-row');
+                        if (newStatsRow && currentStatsRow) {
+                            currentStatsRow.outerHTML = newStatsRow.outerHTML;
+                        }
+                        
+                        // Update table section
+                        const newTableContainer = doc.querySelector('.main-content table')?.closest('div');
+                        const currentTableContainer = document.querySelector('.main-content table')?.closest('div');
+                        if (newTableContainer && currentTableContainer) {
+                            currentTableContainer.innerHTML = newTableContainer.innerHTML;
+                        }
+                        
+                        // Update sidebar SKS counts
+                        const newSemesterBtns = doc.querySelectorAll('.semester-btn');
+                        const currentSemesterBtns = document.querySelectorAll('.semester-btn');
+                        
+                        newSemesterBtns.forEach((newBtn, index) => {
+                            if (currentSemesterBtns[index]) {
+                                const newSksSpan = newBtn.querySelector('span:last-child');
+                                const currentSksSpan = currentSemesterBtns[index].querySelector('span:last-child');
+                                if (newSksSpan && currentSksSpan) {
+                                    currentSksSpan.innerHTML = newSksSpan.innerHTML;
+                                }
+                            }
+                        });
+                        
+                        // Update overall GPA
+                        const newIpkContainer = doc.querySelector('[style*="IPK Keseluruhan"]')?.parentElement;
+                        const currentIpkContainer = document.querySelector('[style*="IPK Keseluruhan"]')?.parentElement;
+                        if (newIpkContainer && currentIpkContainer) {
+                            const newIpkValue = newIpkContainer.querySelector('span:last-child');
+                            const currentIpkValue = currentIpkContainer.querySelector('span:last-child');
+                            if (newIpkValue && currentIpkValue) {
+                                currentIpkValue.textContent = newIpkValue.textContent;
+                            }
+                        }
+                        
+                        console.log('Main content refreshed successfully');
+                    })
+                    .catch(error => {
+                        console.error('Error refreshing content:', error);
+                        // Show error notification but don't reload page
+                        showNotification('Gagal memperbarui konten', 'error');
+                    });
+                } else {
+                    console.log('No semester selected, skipping refresh');
+                }
+            }
+            
+            // Notification function
+            function showNotification(message, type) {
+                const notification = document.createElement('div');
+                notification.innerHTML = message;
+                notification.style.cssText = `
+                    position: fixed;
+                    top: 90px;
+                    right: 20px;
+                    background: ${type === 'success' ? 'linear-gradient(135deg, #48bb78, #38a169)' : '#ef4444'};
+                    color: white;
+                    padding: 12px 20px;
+                    border-radius: 8px;
+                    font-weight: 600;
+                    z-index: 9999;
+                    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                    transform: translateX(100%);
+                    transition: transform 0.3s ease;
+                `;
+                
+                document.body.appendChild(notification);
+                
+                // Animate in
+                setTimeout(() => {
+                    notification.style.transform = 'translateX(0)';
+                }, 100);
+                
+                // Remove after 3 seconds
+                setTimeout(() => {
+                    notification.style.transform = 'translateX(100%)';
+                    setTimeout(() => {
+                        if (notification.parentNode) {
+                            notification.parentNode.removeChild(notification);
+                        }
+                    }, 300);
+                }, 3000);
+            }
+            
+            // Update stats function (optional)
+            function updateStats() {
+                // This function is now handled by refreshMainContent()
+                refreshMainContent();
             }
             
             // Jalankan filter saat halaman pertama kali dimuat (agar konsisten)
